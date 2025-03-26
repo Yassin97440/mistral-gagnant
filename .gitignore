@@ -176,3 +176,4 @@ cython_debug/
 
 #TS - npm
 RAG_TS/node_modules
+RAG_TS/varEnv.ts
