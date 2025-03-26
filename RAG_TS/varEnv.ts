@@ -1,4 +1,4 @@
-const  MISTRAL_API_KEY= "FivU0jNSyZ0V9oCixR8VRPZ11EMGcUVS"
+const  MISTRAL_API_KEY= ""
 
 export { MISTRAL_API_KEY}
 
