@@ -1,0 +1,14 @@
+{
+  "type": "commonjs",
+  "scripts": {
+    "start": "ts-node RAG.ts"
+  },
+  "dependencies": {
+    "@langchain/mistralai": "^0.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "ts-node": "^10.9.1",
+    "@types/node": "^20.0.0"
+  }
+}
