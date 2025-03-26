@@ -8,6 +8,8 @@ class RAGMain {
             const llm = rag.getLlm();
             // Ajoutez ici vos tests et exécutions
             console.log("Test démarré avec succès");
+            rag.createChromaClient();
+            rag.loadingDocuments();
         } catch (error) {
             console.error("Erreur lors de l'exécution :", error);
         }
