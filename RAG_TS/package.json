@@ -4,11 +4,13 @@
     "start": "ts-node RAGMain.ts"
   },
   "dependencies": {
-    "@langchain/mistralai": "^0.2.0"
+    "@langchain/community": "^0.3.37",
+    "@langchain/mistralai": "^0.2.0",
+    "cheerio": "^1.0.0"
   },
   "devDependencies": {
-    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0",
     "ts-node": "^10.9.1",
-    "@types/node": "^20.0.0"
+    "typescript": "^5.0.0"
   }
 }
