@@ -18,21 +18,21 @@ export class DocumentHandler {
     }
 
 
-    private async processDocumentsBatch(documentes: { id: string, content: string, title: string }[]) {
-        for (const doc of documentes) {
+    private async processDocumentsBatch(documents: DocumentsData[]) {
+        for (const doc of documents) {
             const splits = await this.splitDocument(doc);
             // Créer des IDs uniques pour chaque chunk
-            const chunkIds = splits.map((_, index) => `${doc.id}-chunk-${index}`);
+            const chunkIds = splits.map((_, index) => `${doc.pageId}-chunk-${index}`);
 
             await this.chromaClient.addDocuments(splits);
         }
     }
-    private async splitDocument(doc: { id: string; content: string; title: string; }) {
+    private async splitDocument(doc: DocumentsData) {
         const splits = await this.textSplitter.splitDocuments([{
             pageContent: doc.content,
             metadata: {
-                title: doc.title,
-                id: doc.id
+                create_date: doc.createdAt,
+                id: doc.pageId
             }
         }]);
         console.log("nb de chunks pour le doc :", splits.length);
@@ -40,27 +40,26 @@ export class DocumentHandler {
         return splits;
     }
 
-    async getAllDocumentsFromNotionDb(){
+    async getAllDocumentsFromNotionDb(): Promise<DocumentsData[]> {
         const notionClient = new NotionClient(NOTION_API_KEY);
         const pagesIds = await notionClient.getPagesIdFromDatabase(NOTION_DATABASE_ID);
         console.log("🚀 ~ RAGMain ~ main ~ databaseResponse:", pagesIds);
 
-        let allDocumentsContents = "";
+        let allDocumentsContents : DocumentsData[] = [];
         for(let i = 0; i < pagesIds.length; i++){
             console.log(i)
-            allDocumentsContents += "Page num "+i+" : "
-            allDocumentsContents += await notionClient.getPageContent(pagesIds[i])
+
+            allDocumentsContents =  await notionClient.getPageContent(pagesIds[i])
 
         }
         console.debug("🚀 ~ RAGMain ~ main ~ page:", allDocumentsContents);
+        return allDocumentsContents;
     }
 
     async processAllDocumentsWithPagination() {
         const notionClient = this.getNotionClient();
 
-        //NOT GOOD
-        const allDocuments = await notionClient.getPageContent("");
-
+        const allDocuments = await this.getAllDocumentsFromNotionDb();
 
         console.log(`Total documents à traiter : ${allDocuments}`);
 
@@ -76,6 +75,13 @@ export class DocumentHandler {
     private getNotionClient() {
         return new NotionClient(NOTION_API_KEY);
     }
+}
+
+export interface DocumentsData {
+    pageId: string;
+    title: string;
+    content: string;
+    createdAt: Date;
 }
 
 

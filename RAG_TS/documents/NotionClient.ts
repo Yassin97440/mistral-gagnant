@@ -1,6 +1,6 @@
 import { Client } from '@notionhq/client';
 import { GetPageResponse, QueryDatabaseResponse } from '@notionhq/client/build/src/api-endpoints';
-
+import { DocumentsData } from './DocumentHandler';
 
 export class NotionClient {
     private client: Client;
@@ -66,8 +66,10 @@ export class NotionClient {
      * @param blockId L'ID du bloc à récupérer
      * @returns L'objet JSON représentant le bloc
      */
-    getBlockContent(block: any): any {
-            return block?.paragraph?.rich_text.map((richTxt: any) => richTxt.plain_text );
+    getBlockContent(block: any): DocumentsData {
+            const newBlock : DocumentsData = {pageId: block?.parent?.page_id, title: "", content: "", createdAt: block?.created_time};
+            newBlock.content += block?.paragraph?.rich_text.map((richTxt: any) => richTxt.plain_text);
+            return newBlock;
     }
 
     /**
@@ -75,8 +77,8 @@ export class NotionClient {
      * @param blocks Tableau d'IDs de blocs à récupérer
      * @returns Un tableau d'objets JSON représentant les blocs
      */
-     getMultipleBlocks(blocks:[]) : any[] {
-        return blocks.map(blockId => this.getBlockContent(blockId) + " /n"); 
+     getMultipleBlocks(blocks:[]) : DocumentsData[] {
+        return blocks.map(blockId => this.getBlockContent(blockId));
 
     }
 
@@ -91,11 +93,10 @@ export class NotionClient {
         }
     }
 
-    async getPageContent(pageId: string): Promise<any> {
+    async getPageContent(pageId: string): Promise<DocumentsData[]> {
         try {
             const pageBlocks = await this.getPageBlocks(pageId);
             const allPageContent = this.getMultipleBlocks(pageBlocks.results)
-    
             return allPageContent
             
         } catch (error) {
