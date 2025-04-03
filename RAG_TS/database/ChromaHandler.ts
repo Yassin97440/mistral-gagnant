@@ -1,5 +1,6 @@
 import { Chroma } from "@langchain/community/vectorstores/chroma";
 import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
+import { HUGGING_FACEL_API_KEY } from "../varEnv";
 
 
 
@@ -8,7 +9,7 @@ export function createChromaClient() {
     // Utilisation de l'embedding par défaut via notre méthode
 
     const vectorStore = new Chroma(embeddingFunction, {
-        collectionName: "confluence-doc",
+        collectionName: "notion-doc",
         url: "http://localhost:8000",
     });
 
@@ -17,7 +18,7 @@ export function createChromaClient() {
 
 function getEmbeddings() {
     return new HuggingFaceInferenceEmbeddings({
-        apiKey: "",
+        apiKey: HUGGING_FACEL_API_KEY,
         model: "sentence-transformers/all-MiniLM-L6-v2",
     });
 }

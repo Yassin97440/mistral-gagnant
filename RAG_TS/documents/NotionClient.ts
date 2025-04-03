@@ -96,8 +96,8 @@ export class NotionClient {
     async getPageContent(pageId: string): Promise<DocumentsData[]> {
         try {
             const pageBlocks = await this.getPageBlocks(pageId);
-            const allPageContent = this.getMultipleBlocks(pageBlocks.results)
-            return allPageContent
+            const allPageContent = this.getMultipleBlocks(pageBlocks.results);
+            return allPageContent;
             
         } catch (error) {
             console.error('Erreur lors de la récupération du contenu de la page:', error);

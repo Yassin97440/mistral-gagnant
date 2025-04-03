@@ -5,7 +5,7 @@ class RAGMain {
     public static async main() {
         try {
             const docHandler = new DocumentHandler();
-            docHandler.getAllDocumentsFromNotionDb();
+            docHandler.processAllDocumentsWithPagination();
 
         } catch (error) {
             console.error("Erreur lors de l'exécution :", error);

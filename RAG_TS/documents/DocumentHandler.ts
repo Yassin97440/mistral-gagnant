@@ -19,15 +19,23 @@ export class DocumentHandler {
 
 
     private async processDocumentsBatch(documents: DocumentsData[]) {
+        let totalChunksAddedToDb = 0;
         for (const doc of documents) {
+            // console.log("🚀 ~ DocumentHandler ~ processDocumentsBatch ~ doc:", doc)
+            if(!doc.content || doc.content.length == 0 || doc.content ==='undefined')
+                continue;
             const splits = await this.splitDocument(doc);
             // Créer des IDs uniques pour chaque chunk
             const chunkIds = splits.map((_, index) => `${doc.pageId}-chunk-${index}`);
-
+            
             await this.chromaClient.addDocuments(splits);
+            totalChunksAddedToDb +=1;
+            console.warn("CHUNCKED ADDED IN CHROMA ");
         }
+        console.log("🚀 ~ DocumentHandler ~ processDocumentsBatch ~ totalChunksAddedToDb for chunck:", totalChunksAddedToDb)
     }
     private async splitDocument(doc: DocumentsData) {
+
         const splits = await this.textSplitter.splitDocuments([{
             pageContent: doc.content,
             metadata: {
@@ -36,7 +44,7 @@ export class DocumentHandler {
             }
         }]);
         console.log("nb de chunks pour le doc :", splits.length);
-        console.log('visu chunks', splits.slice(0, 3));
+        console.log('splitDocument --  chunks prévisu', splits.slice(0, 3));
         return splits;
     }
 
@@ -50,9 +58,10 @@ export class DocumentHandler {
             console.log(i)
 
             allDocumentsContents =  await notionClient.getPageContent(pagesIds[i])
+            console.log("🚀 ~ DocumentHandler ~ getAllDocumentsFromNotionDb ~ allDocumentsContents: page terminé ", i)
 
         }
-        console.debug("🚀 ~ RAGMain ~ main ~ page:", allDocumentsContents);
+        console.debug("🚀 ~ DocumentHandler ~ main ~ lenght:", allDocumentsContents.length);
         return allDocumentsContents;
     }
 
