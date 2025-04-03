@@ -67,7 +67,7 @@ export class NotionClient {
      * @returns L'objet JSON représentant le bloc
      */
     getBlockContent(block: any): any {
-            return block?.paragraph?.rich_text.map((richTxt: any) => richTxt.plain_text + "/n");
+            return block?.paragraph?.rich_text.map((richTxt: any) => richTxt.plain_text );
     }
 
     /**
@@ -76,7 +76,7 @@ export class NotionClient {
      * @returns Un tableau d'objets JSON représentant les blocs
      */
      getMultipleBlocks(blocks:[]) : any[] {
-        return blocks.map(blockId => this.getBlockContent(blockId) + "/n --- /n"); 
+        return blocks.map(blockId => this.getBlockContent(blockId) + " /n"); 
 
     }
 
