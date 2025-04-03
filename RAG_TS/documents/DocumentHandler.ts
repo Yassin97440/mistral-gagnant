@@ -1,8 +1,8 @@
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { NotionClient } from "./NotionClient";
-import { createChromaClient } from "database/ChromaHandler"; 
+import { createChromaClient } from "../database/ChromaHandler"; 
 import type { Chroma } from "@langchain/community/vectorstores/chroma";
-import { NOTION_API_KEY } from "varEnv";
+import { NOTION_API_KEY, NOTION_DATABASE_ID } from "../varEnv";
 
 export class DocumentHandler {
     private BATCH_SIZE = 50;
@@ -40,8 +40,23 @@ export class DocumentHandler {
         return splits;
     }
 
+    async getAllDocumentsFromNotionDb(){
+        const notionClient = new NotionClient(NOTION_API_KEY);
+        const pagesIds = await notionClient.getPagesIdFromDatabase(NOTION_DATABASE_ID);
+        console.log("🚀 ~ RAGMain ~ main ~ databaseResponse:", pagesIds);
+
+        let allDocumentsContents = "";
+        for(let i = 0; i < pagesIds.length; i++){
+            console.log(i)
+            allDocumentsContents += "Page num "+i+" : "
+            allDocumentsContents += await notionClient.getPageContent(pagesIds[i])
+
+        }
+        console.debug("🚀 ~ RAGMain ~ main ~ page:", allDocumentsContents);
+    }
+
     async processAllDocumentsWithPagination() {
-        const notionClient = this.getNotionClient()
+        const notionClient = this.getNotionClient();
 
         //NOT GOOD
         const allDocuments = await notionClient.getPageContent("");
