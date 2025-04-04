@@ -24,10 +24,12 @@
     "pinia": "^3.0.1",
     "sharp": "^0.33.5",
     "vue": "^3.5.13",
-    "vue-router": "^4.5.0"
+    "vue-router": "^4.5.0",
+    "vuetify-nuxt-module": "^0.18.6"
   },
   "devDependencies": {
     "@nuxt/devtools": "^1.1.4",
+    "@nuxtjs/tailwindcss": "^6.13.2",
     "vite-plugin-vuetify": "^2.1.0",
     "vuetify": "^3.7.18"
   }
