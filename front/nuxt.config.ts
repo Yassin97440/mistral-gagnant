@@ -20,6 +20,13 @@ export default defineNuxtConfig({
     },
   },
 
+  tailwindcss: {
+    cssPath: '~/assets/css/tailwind.css',
+    configPath: '~/tailwind.config.ts',
+    exposeConfig: true,
+    viewer: true,
+  },
+
   runtimeConfig: {
     mistralApiKey: process.env.MISTRAL_API_KEY
   }
