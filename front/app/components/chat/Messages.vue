@@ -1,5 +1,5 @@
 <template>
-  <div class="messages-container">
+  <div  class="messages-container">
     <v-container fluid>
       <div
         v-if="!activeChat || activeChat.messages.length === 0"
@@ -20,13 +20,13 @@
           "
         >
           <v-card
-            :color="message.role === 'user' ? 'primary' : 'grey-lighten-4'"
+            :color="message.role === 'user' ? 'bg-user-background' : 'grey-lighten-4'"
             class="message-card"
           >
             <v-card-text>
               <div class="d-flex align-center">
                 <v-avatar
-                  :color="message.role === 'user' ? 'primary-darken-2' : 'grey'"
+                  :color="message.role === 'user' ? 'bg-user-background' : 'bg-assistant-background '"
                   class="mr-3"
                 >
                   <v-icon color="white">

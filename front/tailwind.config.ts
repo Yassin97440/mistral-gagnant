@@ -19,7 +19,7 @@ export default <Config>{
           light: '#42A5F5'
         },
         secondary: {
-          DEFAULT: '#9C27B0',
+          DEFAULT: '#14532d',
           dark: '#7B1FA2',
           light: '#BA68C8'
         },
@@ -27,17 +27,17 @@ export default <Config>{
         user: {
           DEFAULT: '#1976D2', // Même que primary
           dark: '#1565C0',
-          background: '#E3F2FD'
+          background: '##14532d'
         },
         assistant: {
           DEFAULT: '#616161',
           dark: '#424242',
-          background: '#F5F5F5' // gray-lighten-4 dans Vuetify
+          background: '##00DC82' // gray-lighten-4 dans Vuetify
         },
         // Couleurs d'interface
         interface: {
           border: 'rgba(0, 0, 0, 0.1)',
-          background: '#FFFFFF'
+          background: '#00dc82'
         }
       },
       borderRadius: {

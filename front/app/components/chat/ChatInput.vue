@@ -75,16 +75,16 @@ const handleEnterPress = (e: KeyboardEvent) => {
 </script>
 
 <style scoped>
-.chat-input-container {
-  width: 100%;
-  position: sticky;
-  bottom: 0;
-  background-color: white;
-  padding: 10px 20px;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.chat-textarea {
+  .chat-input-container {
+    width: 100%;
+    position: sticky;
+    bottom: 0;
+    padding: 10px 20px;
+    background-color: var(--color-interface-background);
+    border-top: 1px solid var(--color-interface-border);
+  }
+  
+  .chat-textarea {
   border-radius: 8px;
 }
 </style>
