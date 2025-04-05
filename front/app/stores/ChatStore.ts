@@ -31,7 +31,7 @@ export const useChatStore = defineStore('chat', {
         async sendMessage(content: Message, chatId: number) {
             this.isLoading = true
             try {
-                const chainResponse = await $fetch('/api/chatTest', {
+                const chainResponse: any = await $fetch('/api/chatTest', {
                     method: 'POST',
                     body: this.activeChat?.messages,
                     headers: {

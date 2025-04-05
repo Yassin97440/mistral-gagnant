@@ -43,20 +43,19 @@ const sendMessage = async () => {
     role: "user",
     content: messageContent,
   };
-  chatStore.addMessages(newMessage, activeChat?.value?.id);
+  if (activeChat?.value) {
 
-  // Envoyer au backend et recevoir la réponse
-  try {
-    const response = await chatStore.sendMessage(
-      newMessage,
-      activeChat?.value?.id
-    );
-  } catch (error) {
-    console.error("Erreur lors de l'envoi du message:", error);
-    // chatStore.chats[props.chatId]?.messages.push({
-    //   role: "assistant",
-    //   content: "Une erreur est survenue. Veuillez réessayer.",
-    // });
+    chatStore.addMessages(newMessage, activeChat?.value?.id);
+    // Envoyer au backend et recevoir la réponse
+    try {
+      const response = await chatStore.sendMessage(
+        newMessage,
+        activeChat?.value?.id
+      );
+    } catch (error) {
+      console.error("Erreur lors de l'envoi du message:", error);
+
+    }
   }
 };
 
