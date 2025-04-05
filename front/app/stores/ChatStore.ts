@@ -17,14 +17,14 @@ interface Chat {
 interface ChatStore {
     chats: Chat[],
     isLoading: boolean,
-    activeChat: Chat
+    activeChat: Chat | undefined
 }
 
 export const useChatStore = defineStore('chat', {
     state: (): ChatStore => ({
         chats: [],
         isLoading: false,
-        activeChat: { id: 0, title: '', messages: [] }
+        activeChat: undefined
     }),
 
     actions: {
@@ -64,12 +64,19 @@ export const useChatStore = defineStore('chat', {
         },
 
         createNewChat() {
-            const newChatId = this.chats.length + 1;
+            let newChatId;
+            if (!this.chats.length || this.chats.length == 0) {
+                newChatId = 0
+            } else {
+                newChatId = this.chats.length + 1;
+            }
+
             this.chats.push({
                 id: newChatId,
                 title: `Chat ${newChatId}`,
                 messages: []
             });
+            this.selectChat(newChatId)
             return newChatId;
         },
 
