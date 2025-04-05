@@ -73,3 +73,12 @@ bun run preview
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+
+## Thème Tailwind CSS
+
+Le projet utilise Tailwind CSS avec un thème personnalisé pour centraliser les couleurs et styles des composants.
+
+### Structure des fichiers
+
+- `tailwind.config.ts` : Configuration principale de Tailwind avec le thème défini
+
