@@ -28,6 +28,7 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    mistralApiKey: process.env.MISTRAL_API_KEY
+    mistralApiKey: process.env.MISTRAL_API_KEY,
+    huggingFaceApiToken: process.env.HUGGING_FACE_API_KEY
   }
 })

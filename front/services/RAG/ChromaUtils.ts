@@ -1,11 +1,12 @@
 import { Chroma } from "@langchain/community/vectorstores/chroma";
 import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
 
+const runtimeConfig = useRuntimeConfig()
 
 
 export function createChromaClient() {
     const embeddingFunction = new HuggingFaceInferenceEmbeddings({
-        apiKey: "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",
+        apiKey: runtimeConfig.huggingFaceApiToken,
         model: "sentence-transformers/all-MiniLM-L6-v2",
     });
     // Utilisation de l'embedding par défaut via notre méthode
