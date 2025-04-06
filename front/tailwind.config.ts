@@ -12,33 +12,13 @@ export default <Config>{
   theme: {
     extend: {
       colors: {
-        // Couleurs principales basées sur les composants existants
-        primary: {
-          DEFAULT: '#1976D2', // Couleur primaire de Vuetify
-          dark: '#1565C0',
-          light: '#42A5F5'
-        },
-        secondary: {
-          DEFAULT: '#14532d',
-          dark: '#7B1FA2',
-          light: '#BA68C8'
-        },
+        // Couleurs principales
+        primary: '#1976D2',
+        secondary: '#14532d',
         // Couleurs pour les messages
-        user: {
-          DEFAULT: '#1976D2', // Même que primary
-          dark: '#1565C0',
-          background: '##14532d'
-        },
-        assistant: {
-          DEFAULT: '#616161',
-          dark: '#424242',
-          background: '##00DC82' // gray-lighten-4 dans Vuetify
-        },
-        // Couleurs d'interface
-        interface: {
-          border: 'rgba(0, 0, 0, 0.1)',
-          background: '#00dc82'
-        }
+        'user-bg': '#EBF5FF',
+        'assistant-bg': '#F5FFF9',
+        'interface-bg': '#FFFFFF'
       },
       borderRadius: {
         'message': '12px'

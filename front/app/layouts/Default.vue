@@ -1,16 +1,17 @@
 <template>
   <v-app>
-    <v-navigation-drawer v-model="drawer" permanent location="left" width="300">
+    <v-navigation-drawer color="interface-bg" v-model="drawer" permanent location="left" width="300" class="">
       <v-list-item prepend-avatar="https://randomuser.me/api/portraits/men/78.jpg" title="Mon espace de chat">
       </v-list-item>
 
       <v-divider></v-divider>
 
-      <v-btn block color="primary" class="ma-2" prepend-icon="mdi-plus" @click="chatStore.createNewChat">
+      <v-btn block color="primary" class="ma-2 text-white font-medium" prepend-icon="mdi-plus"
+        @click="chatStore.createNewChat">
         Nouvelle conversation
       </v-btn>
 
-      <v-btn block color="primary" class="ma-2" prepend-icon="mdi-plus" @click="callTestChroma">
+      <v-btn block color="primary" class="ma-2 text-white font-medium" prepend-icon="mdi-plus" @click="callTestChroma">
         TEST CHROMA DB
       </v-btn>
 
@@ -18,12 +19,12 @@
         <v-list-item v-if="activeChat" v-for="(chat, index) in chatStore.chats" :key="index" :value="index"
           :title="chat.title" :prepend-icon="activeChat?.id === chat.id ? 'mdi-chat' : 'mdi-chat-outline'
             " @click="chatStore.selectChat(chat.id)" :active="activeChat?.id === chat.id"
-          :class="{ 'active-chat': activeChat?.id === chat.id }">
+          :class="{ 'active-chat': activeChat?.id === chat.id, 'rounded-message': true }">
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar color="primary" density="compact">
+    <v-app-bar color="primary" density="compact" class="text-white">
       <template v-slot:prepend>
         <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       </template>

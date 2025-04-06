@@ -21,10 +21,34 @@ export default defineNuxtConfig({
   },
 
   tailwindcss: {
-    // cssPath: '~/assets/css/tailwind.css',
+    cssPath: '~/app/assets/css/tailwind.css',
     configPath: '~/tailwind.config.ts',
     exposeConfig: true,
     viewer: true,
+  },
+
+  vuetify: {
+    moduleOptions: {
+      /* Module specific options */
+    },
+    vuetifyOptions: {
+      /* Vuetify options */
+      theme: {
+        defaultTheme: 'light',
+        themes: {
+          light: {
+            dark: false,
+            colors: {
+              primary: '#00DC82',
+              secondary: '#14532d',
+              'user-bg': '#EBF5FF',
+              'assistant-bg': '#F5FFF9',
+              'interface-bg': '#020618'
+            }
+          }
+        }
+      }
+    }
   },
 
   runtimeConfig: {
