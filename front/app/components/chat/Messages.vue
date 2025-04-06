@@ -8,11 +8,9 @@
         </div>
       </div>
       <template v-else>
-        <div v-for="(message, index) in activeChat.messages" :v-if="!(message.role === 'system')" :key="index"
-          class="message-wrapper my-4" :class="message.role === 'user' ? 'user-message' : 'assistant-message'
-            ">
-          <v-card :class="message.role === 'user' ? 'bg-user-bg' : 'bg-assistant-bg'" class="message-card"
-            :v-if="!(message.role == 'system')">
+        <div v-for="(message, index) in filteredMessages" :key="index" class="message-wrapper my-4" :class="message.role === 'user' ? 'user-message' : 'assistant-message'
+          ">
+          <v-card :class="message.role === 'user' ? 'bg-user-bg' : 'bg-assistant-bg'" class="message-card">
             <v-card-text>
               <div class="d-flex align-center">
                 <v-avatar :class="message.role === 'user' ? 'bg-user-bg' : 'bg-assistant-bg '" class="mr-3">
@@ -39,9 +37,18 @@
 import { useChatStore } from "~/stores/ChatStore";
 import { computed } from "vue";
 
+interface Message {
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+}
+
 const chatStore = useChatStore();
 const activeChat = computed(() => {
-  return chatStore.activeChat;
+  return chatStore.activeChat as { messages: Message[] } | null;
+});
+
+const filteredMessages = computed(() => {
+  return activeChat.value?.messages.filter(msg => msg.role !== 'system') ?? [];
 });
 </script>
 
