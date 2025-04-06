@@ -41,8 +41,8 @@ export default defineNuxtConfig({
             colors: {
               primary: '#00DC82',
               secondary: '#14532d',
-              'user-bg': '#EBF5FF',
-              'assistant-bg': '#F5FFF9',
+              'user-bg': '#7E6064',
+              'assistant-bg': 'b7bcb9',
               'interface-bg': '#020618'
             }
           }

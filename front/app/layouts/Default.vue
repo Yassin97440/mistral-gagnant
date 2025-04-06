@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer color="interface-bg" v-model="drawer" permanent location="left" width="300" class="">
+    <v-navigation-drawer v-model="drawer" permanent location="left" width="300" class="bg-interface-bg">
       <v-list-item prepend-avatar="https://randomuser.me/api/portraits/men/78.jpg" title="Mon espace de chat">
       </v-list-item>
 
@@ -11,7 +11,8 @@
         Nouvelle conversation
       </v-btn>
 
-      <v-btn block color="primary" class="ma-2 text-white font-medium" prepend-icon="mdi-plus" @click="callTestChroma">
+      <v-btn block color="secondary" class="ma-2 text-white font-medium" prepend-icon="mdi-plus"
+        @click="callTestChroma">
         TEST CHROMA DB
       </v-btn>
 

@@ -1,9 +1,10 @@
 <template>
-  <div class="chat-input-container">
-    <v-card flat class="mx-auto">
+  <div class="bg-interface-bg chat-input-container ">
+    <v-card flat class="mx-auto bg-interface-bg">
       <v-form @submit.prevent="sendMessage">
         <v-textarea v-model="userMessage" variant="outlined" placeholder="Écrivez votre message ici..." rows="3"
-          auto-grow hide-details class="chat-textarea" @keydown.enter.prevent="handleEnterPress"></v-textarea>
+          auto-grow hide-details class="chat-textarea bg-secondary"
+          @keydown.enter.prevent="handleEnterPress"></v-textarea>
 
         <div class="d-flex justify-end align-center pa-2">
           <v-btn :disabled="!userMessage.trim() || chatStore.isLoading" :loading="chatStore.isLoading" color="primary"
