@@ -34,6 +34,8 @@ export class DocumentHandler {
         }
         console.log("🚀 ~ DocumentHandler ~ processDocumentsBatch ~ totalChunksAddedToDb for chunck:", totalChunksAddedToDb)
     }
+
+    //TODO: besoin d'optimiser et retravailler le chunckings des documents. Les réponses sur les tests sont allucinatoires et mélanges un peu tout lol
     private async splitDocument(doc: BlockData) {
         // D'abord splitter le contenu sans métadonnées
         const splits = await this.textSplitter.splitDocuments([{

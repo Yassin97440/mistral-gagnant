@@ -5,6 +5,7 @@ class RAGMain {
     public static async main() {
         try {
             const docHandler = new DocumentHandler();
+
             docHandler.processAllDocumentsWithPagination();
 
         } catch (error) {
