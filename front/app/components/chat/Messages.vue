@@ -8,9 +8,11 @@
         </div>
       </div>
       <template v-else>
-        <div v-for="(message, index) in activeChat.messages" :key="index" class="message-wrapper my-4" :class="message.role === 'user' ? 'user-message' : 'assistant-message'
-          ">
-          <v-card :class="message.role === 'user' ? 'bg-user-bg' : 'bg-assistant-bg'" class="message-card">
+        <div v-for="(message, index) in activeChat.messages" :v-if="!(message.role === 'system')" :key="index"
+          class="message-wrapper my-4" :class="message.role === 'user' ? 'user-message' : 'assistant-message'
+            ">
+          <v-card :class="message.role === 'user' ? 'bg-user-bg' : 'bg-assistant-bg'" class="message-card"
+            :v-if="!(message.role == 'system')">
             <v-card-text>
               <div class="d-flex align-center">
                 <v-avatar :class="message.role === 'user' ? 'bg-user-bg' : 'bg-assistant-bg '" class="mr-3">

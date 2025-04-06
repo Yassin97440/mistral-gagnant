@@ -66,17 +66,22 @@ export const useChatStore = defineStore('chat', {
         createNewChat() {
             let newChatId;
             if (!this.chats.length || this.chats.length == 0) {
-                newChatId = 0
+                newChatId = 0;
             } else {
                 newChatId = this.chats.length + 1;
             }
-
+            const systemPrompt: Message[] = [{
+                role: 'system',
+                content: 'Tu es un chatbot. Ton role est detre un assistant de grande qualité pour des taches plus ou moins technique et plus ou moins complexes. Sujets principaux software engineering, à lIA, en passanr par etude besoin, recherche de mission pour freelance développeur en France, gestion de projet, ... Répond dans la langue de linterlocuteur. Réponse courte favorisée'
+            }];
             this.chats.push({
                 id: newChatId,
                 title: `Chat ${newChatId}`,
-                messages: []
+                messages: systemPrompt
             });
-            this.selectChat(newChatId)
+
+            this.selectChat(newChatId);
+
             return newChatId;
         },
 
