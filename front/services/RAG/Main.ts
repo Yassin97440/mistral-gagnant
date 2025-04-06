@@ -1,27 +1,32 @@
 import type { Chroma } from "@langchain/community/vectorstores/chroma";
-import { createChromaClient } from "./ChromaUtils";
+import { createChromaClient, getEmbeddings } from "./ChromaUtils";
 import { Annotation } from "@langchain/langgraph";
 import type { Document } from "langchain/document";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { pull } from "langchain/hub";
 import type { ChatMistralAI } from "@langchain/mistralai";
 import MistralClient from "./MistralClient";
+import type { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
 
 export class Main {
     private chromaClient: Chroma;
     private promptTemplate!: ChatPromptTemplate;
     private llm: ChatMistralAI
+    private emdeddingsFunction: HuggingFaceInferenceEmbeddings
 
     constructor() {
         this.chromaClient = createChromaClient();
         this.getPromptTemplate()
         this.llm = new MistralClient().client
+        this.emdeddingsFunction = getEmbeddings();
     }
     public async askQuestion(conversation: ChatMessage[]) {
-        const lastQuestion: ChatMessage = conversation[conversation.length - 1] ?? { role: 'user', content: '' }
-        const retrievedDocs = await this.retrieveContext({ question: lastQuestion.content })
-        //on retrive à partir de la question
 
+        const lastQuestion: ChatMessage = conversation[conversation.length - 1] ?? { role: 'user', content: '' }
+
+        const embeddedQuestion = await this.emdeddingsFunction.embedQuery(lastQuestion.content)
+        //on retrive à partir de la question
+        const retrievedDocs = await this.retrieveContext({ question: embeddedQuestion.toString() })
         return this.generateResponse({
             context: retrievedDocs,
             question: conversation

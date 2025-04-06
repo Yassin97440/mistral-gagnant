@@ -5,10 +5,7 @@ const runtimeConfig = useRuntimeConfig()
 
 
 export function createChromaClient() {
-    const embeddingFunction = new HuggingFaceInferenceEmbeddings({
-        apiKey: runtimeConfig.huggingFaceApiToken,
-        model: "sentence-transformers/all-MiniLM-L6-v2",
-    });
+    const embeddingFunction = getEmbeddings();
     // Utilisation de l'embedding par défaut via notre méthode
 
     const vectorStore = new Chroma(embeddingFunction, {
@@ -21,6 +18,13 @@ export function createChromaClient() {
 
 
 
+
+export function getEmbeddings() {
+    return new HuggingFaceInferenceEmbeddings({
+        apiKey: runtimeConfig.huggingFaceApiToken,
+        model: "sentence-transformers/all-MiniLM-L6-v2",
+    });
+}
 // Embedding mock qui ne fait rien (Chroma va utiliser le sien)
 // class EmptyEmbeddings implements Embeddings {
 //     async embedDocuments(texts: string[]): Promise<number[][]> {
