@@ -6,7 +6,6 @@ import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { pull } from "langchain/hub";
 import type { ChatMistralAI } from "@langchain/mistralai";
 import MistralClient from "./MistralClient";
-import type { DocumentInterface } from "@langchain/core/documents";
 
 export class Main {
     private chromaClient: Chroma;
@@ -18,17 +17,15 @@ export class Main {
         this.getPromptTemplate()
         this.llm = new MistralClient().client
     }
-
-    public async askQuestion(question: string) {
-        const retrievedDocs = await this.retrieveContext({ question: question })
+    public async askQuestion(conversation: ChatMessage[]) {
+        const lastQuestion: ChatMessage = conversation[conversation.length - 1] ?? { role: 'user', content: '' }
+        const retrievedDocs = await this.retrieveContext({ question: lastQuestion.content })
         //on retrive à partir de la question
 
-        const response = this.generateResponse({
+        return this.generateResponse({
             context: retrievedDocs,
-            question: question
+            question: conversation
         })
-        //on génère 
-
 
     }
 
@@ -45,8 +42,8 @@ export class Main {
             context: docsContent,
         });
         const response = await this.llm.invoke(messages);
-        console.log(response)
-        return { answer: response.content };
+        console.log("🚀 ~ Main ~ generateResponse= ~ response:", response.content)
+        return response.content;
     };
 
     public async retrieveContext(state: typeof InputStateAnnotation.State) {
@@ -63,8 +60,11 @@ export class Main {
 export const InputStateAnnotation = Annotation.Root({
     question: (Annotation<string>),
 });
-
+export interface ChatMessage {
+    role: 'system' | 'user' | 'assistant',
+    content: string
+}
 export const StateAnnotation = Annotation.Root({
-    question: (Annotation<string>),
+    question: (Annotation<ChatMessage[]>),
     context: (Annotation<Document[]>),
 });

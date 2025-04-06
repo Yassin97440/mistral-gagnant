@@ -14,7 +14,7 @@ class MistralClient {
     private config: MistralConfig;
 
     constructor(config: MistralConfig = {
-        model: "mistral-large-latest",
+        model: "ministral-8b-latest",
         temperature: 0,
         apiKey: mistralApiKey
     }) {

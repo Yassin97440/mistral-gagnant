@@ -12,7 +12,7 @@ export function createChromaClient() {
     // Utilisation de l'embedding par défaut via notre méthode
 
     const vectorStore = new Chroma(embeddingFunction, {
-        collectionName: "confluence-doc",
+        collectionName: "notion-doc",
         url: "http://localhost:8000",
     });
 
