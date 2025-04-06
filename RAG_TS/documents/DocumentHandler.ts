@@ -1,6 +1,6 @@
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { NotionClient } from "./NotionClient";
-import { createChromaClient } from "../database/ChromaHandler"; 
+import { createChromaClient } from "../database/ChromaHandler";
 import type { Chroma } from "@langchain/community/vectorstores/chroma";
 import { NOTION_API_KEY, NOTION_DATABASE_ID } from "../varEnv";
 
@@ -18,55 +18,71 @@ export class DocumentHandler {
     }
 
 
-    private async processDocumentsBatch(documents: DocumentsData[]) {
+    private async processDocumentsBatch(documents: BlockData[]) {
         let totalChunksAddedToDb = 0;
         for (const doc of documents) {
             // console.log("🚀 ~ DocumentHandler ~ processDocumentsBatch ~ doc:", doc)
-            if(!doc.content || doc.content.length == 0 || doc.content ==='undefined')
+            if (!doc.content || doc.content.length == 0 || doc.content === 'undefined')
                 continue;
             const splits = await this.splitDocument(doc);
             // Créer des IDs uniques pour chaque chunk
-            const chunkIds = splits.map((_, index) => `${doc.pageId}-chunk-${index}`);
-            
+            const chunkIds = splits.map((_, index) => `${doc.id}-chunk-${index}`);
+
             await this.chromaClient.addDocuments(splits);
-            totalChunksAddedToDb +=1;
+            totalChunksAddedToDb += 1;
             console.warn("CHUNCKED ADDED IN CHROMA ");
         }
         console.log("🚀 ~ DocumentHandler ~ processDocumentsBatch ~ totalChunksAddedToDb for chunck:", totalChunksAddedToDb)
     }
-    private async splitDocument(doc: DocumentsData) {
-
+    private async splitDocument(doc: BlockData) {
+        // D'abord splitter le contenu sans métadonnées
         const splits = await this.textSplitter.splitDocuments([{
             pageContent: doc.content,
-            metadata: {
-                create_date: doc.createdAt,
-                id: doc.pageId
-            }
+            metadata: {} // Laisser vide pour l'instant
         }]);
-        console.log("nb de chunks pour le doc :", splits.length);
-        console.log('splitDocument --  chunks prévisu', splits.slice(0, 3));
-        return splits;
+        
+        // Ensuite, enrichir chaque chunk avec des métadonnées spécifiques
+        return splits.map((split, index) => {
+            // Métadonnées communes à tous les chunks
+            split.metadata = {
+                create_date: doc.createdAt,
+                id: doc.id,
+                title: doc.title,
+                parent_id: doc.parentId,
+                document_type: doc.documentType,
+                last_edited: doc.lastEdited,
+                
+                // Métadonnées spécifiques au chunk
+                chunk_index: index,
+                chunk_total: splits.length,
+                
+                // Information sur le contenu du chunk
+                chunk_summary: `Partie ${index+1}/${splits.length} de ${doc.title}`,
+                chunk_position: index === 0 ? "début" : index === splits.length - 1 ? "fin" : "milieu",
+                
+                // Optionnel: analyse du contenu du chunk (mots-clés, entités, etc.)
+                // chunk_keywords: extractKeywords(split.pageContent)
+            };
+            return split;
+        });
     }
 
-    async getAllDocumentsFromNotionDb(): Promise<DocumentsData[]> {
-        const notionClient = new NotionClient(NOTION_API_KEY);
-        const pagesIds = await notionClient.getPagesIdFromDatabase(NOTION_DATABASE_ID);
-        console.log("🚀 ~ RAGMain ~ main ~ databaseResponse:", pagesIds);
+    async getAllDocumentsFromNotionDb(): Promise<BlockData[]> {
+        const notionClient = this.getNotionClient();
+        const pagesIds = await notionClient.getPagesDataFromDatabase(NOTION_DATABASE_ID);
 
-        let allDocumentsContents : DocumentsData[] = [];
-        for(let i = 0; i < pagesIds.length; i++){
-            console.log(i)
+        let allDocumentsContents: BlockData[] = [];
+        for (let i = 0; i < pagesIds.length; i++) {
 
-            allDocumentsContents =  await notionClient.getPageContent(pagesIds[i])
-            console.log("🚀 ~ DocumentHandler ~ getAllDocumentsFromNotionDb ~ allDocumentsContents: page terminé ", i)
+            allDocumentsContents = await notionClient.getPageContent(pagesIds[i].id)
+            console.info("🚀 ~ DocumentHandler ~ getAllDocumentsFromNotionDb ~ allDocumentsContents: page terminé ", i)
 
         }
-        console.debug("🚀 ~ DocumentHandler ~ main ~ lenght:", allDocumentsContents.length);
         return allDocumentsContents;
     }
 
     async processAllDocumentsWithPagination() {
-        const notionClient = this.getNotionClient();
+
 
         const allDocuments = await this.getAllDocumentsFromNotionDb();
 
@@ -86,11 +102,14 @@ export class DocumentHandler {
     }
 }
 
-export interface DocumentsData {
-    pageId: string;
+export interface BlockData {
+    id: string;
     title: string;
     content: string;
     createdAt: Date;
+    parentId?: string;
+    documentType?: string;
+    lastEdited?: Date;
 }
 
 
