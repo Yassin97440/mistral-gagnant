@@ -50,8 +50,8 @@ export class NotionClient {
             const response = await this.queryDatabase(databaseId);
 
             // Extraire les IDs de chaque page dans les résultats
-            const pageIds = response.results.map(page => {
-                const pageData : NotionPageData = {
+            const pagesData = response.results.map(page => {
+                const pageData: NotionPageData = {
                     id: NotionPageUtils.getPageId(page),
                     title: NotionPageUtils.getPageTitle(page),
                     authorName: NotionPageUtils.getPageAuthor(page),
@@ -63,9 +63,9 @@ export class NotionClient {
                 console.log("🚀 ~ NotionClient ~ getPagesDataFromDatabase ~ pageData:", pageData)
                 return pageData
             });
-            
 
-            return pageIds;
+
+            return pagesData;
         } catch (error) {
             console.error('Erreur lors de l\'extraction des IDs de pages:', error);
             throw error;
@@ -90,8 +90,16 @@ export class NotionClient {
      * @param blockId L'ID du bloc à récupérer
      * @returns L'objet JSON représentant le bloc
      */
-    getBlockContent(block: any): BlockData {
-        const newBlock: BlockData = { id: block?.parent?.page_id, title: "", content: "", createdAt: block?.created_time };
+    getBlockContent(block: any, page: NotionPageData): BlockData {
+        const newBlock: BlockData = {
+            id: block?.parent?.page_id,
+            content: "",
+            title: page.title,
+            createdAt: block?.created_time,
+            parentId: page.id,
+            documentType: page.categories,
+            authorName: page.authorName
+        };
         newBlock.content += block?.paragraph?.rich_text.map((richTxt: any) => richTxt.plain_text);
         return newBlock;
     }
@@ -101,8 +109,8 @@ export class NotionClient {
      * @param blocks Tableau d'IDs de blocs à récupérer
      * @returns Un tableau d'objets JSON représentant les blocs
      */
-    getMultipleBlocks(blocks: []): BlockData[] {
-        return blocks.map(blockId => this.getBlockContent(blockId));
+    getMultipleBlocks(blocks: [], page: NotionPageData): BlockData[] {
+        return blocks.map(blockId => this.getBlockContent(blockId, page));
 
     }
 
@@ -117,11 +125,11 @@ export class NotionClient {
         }
     }
 
-    async getPageContent(pageId: string): Promise<BlockData[]> {
+    async getPageContent(page: NotionPageData): Promise<BlockData[]> {
         try {
-            const pageBlocks = await this.getPageBlocks(pageId);
+            const pageBlocks = await this.getPageBlocks(page.id);
             // console.log("🚀 ~ NotionClient ~ getPageContent ~ pageBlocks:", pageBlocks)
-            const allPageContent = this.getMultipleBlocks(pageBlocks.results);
+            const allPageContent = this.getMultipleBlocks(pageBlocks.results, page);
             return allPageContent;
 
         } catch (error) {

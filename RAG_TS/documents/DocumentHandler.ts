@@ -69,12 +69,12 @@ export class DocumentHandler {
 
     async getAllDocumentsFromNotionDb(): Promise<BlockData[]> {
         const notionClient = this.getNotionClient();
-        const pagesIds = await notionClient.getPagesDataFromDatabase(NOTION_DATABASE_ID);
+        const pages = await notionClient.getPagesDataFromDatabase(NOTION_DATABASE_ID);
 
         let allDocumentsContents: BlockData[] = [];
-        for (let i = 0; i < pagesIds.length; i++) {
+        for (let i = 0; i < pages.length; i++) {
 
-            allDocumentsContents = await notionClient.getPageContent(pagesIds[i].id)
+            allDocumentsContents.push(...await notionClient.getPageContent(pages[i]))
             console.info("🚀 ~ DocumentHandler ~ getAllDocumentsFromNotionDb ~ allDocumentsContents: page terminé ", i)
 
         }
@@ -105,10 +105,11 @@ export class DocumentHandler {
 export interface BlockData {
     id: string;
     title: string;
+    authorName: string,
     content: string;
     createdAt: Date;
     parentId?: string;
-    documentType?: string;
+    documentType?: string[];
     lastEdited?: Date;
 }
 
