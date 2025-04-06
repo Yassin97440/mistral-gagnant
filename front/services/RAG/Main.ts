@@ -26,7 +26,7 @@ export class Main {
 
         const embeddedQuestion = await this.emdeddingsFunction.embedQuery(lastQuestion.content)
         //on retrive à partir de la question
-        const retrievedDocs = await this.retrieveContext({ question: embeddedQuestion.toString() })
+        const retrievedDocs = await this.retrieveContext({ question: lastQuestion.content })
         return this.generateResponse({
             context: retrievedDocs,
             question: conversation
