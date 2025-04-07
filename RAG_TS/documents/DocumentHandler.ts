@@ -39,37 +39,34 @@ export class DocumentHandler {
     //TODO: besoin d'optimiser et retravailler le chunckings des documents. Les réponses sur les tests sont allucinatoires et mélanges un peu tout lol
     private async splitDocument(doc: BlockData) {
         // D'abord splitter le contenu sans métadonnées
-        const splitter = new CustomJsonSplitter({ chunkSize: 1000, chunkOverlap: 300 });
+        const splitter = new CustomJsonSplitter({ chunkSize: 1500, chunkOverlap: 300 });
 
-        const jsonChunks = splitter.split(doc.content);
+        const jsonChunks = await splitter.splitJsonWithLangchain(doc.content);
 
-        const splits = await this.textSplitter.splitDocuments([{
-            pageContent: doc.content,
-            metadata: {} // Laisser vide pour l'instant
-        }]);
-        
+
         // Ensuite, enrichir chaque chunk avec des métadonnées spécifiques
         return jsonChunks.map((split, index) => {
             // Métadonnées communes à tous les chunks
             split.metadata = {
-                create_date: doc.createdAt,
-                id: doc.id,
-                title: doc.title,
-                parent_id: doc.parentId,
-                document_type: doc.documentType,
-                last_edited: doc.lastEdited,
+                "create_date": doc.createdAt,
+                "id": doc.id,
+                "title": doc.title,
+                "parent_id": doc.parentId,
+                "document_type": doc.documentType,
+                "last_edited": doc.lastEdited,
                 
                 // Métadonnées spécifiques au chunk
-                chunk_index: index,
-                chunk_total: splits.length,
+                "chunk_index": index,
+                "chunk_total": jsonChunks.length,
                 
                 // Information sur le contenu du chunk
-                chunk_summary: `Partie ${index+1}/${splits.length} de ${doc.title}`,
-                chunk_position: index === 0 ? "début" : index === splits.length - 1 ? "fin" : "milieu",
+                "chunk_summary": `Partie ${index+1}/${jsonChunks.length} de ${doc.title}`,
+                "chunk_position": index === 0 ? "début" : index === jsonChunks.length - 1 ? "fin" : "milieu",
                 
                 // Optionnel: analyse du contenu du chunk (mots-clés, entités, etc.)
                 // chunk_keywords: extractKeywords(split.pageContent)
             };
+            console.log("🚀 ~ DocumentHandler ~ returnjsonChunks.map ~ split:", split)
             return split;
         });
     }
