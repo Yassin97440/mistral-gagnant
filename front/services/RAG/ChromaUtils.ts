@@ -6,10 +6,9 @@ const runtimeConfig = useRuntimeConfig()
 
 export function createChromaClient() {
     const embeddingFunction = getEmbeddings();
-    // Utilisation de l'embedding par défaut via notre méthode
 
     const vectorStore = new Chroma(embeddingFunction, {
-        collectionName: "notion-doc",
+        collectionName: "improve-chuncking",
         url: "http://localhost:8000",
     });
 
@@ -25,13 +24,4 @@ export function getEmbeddings() {
         model: "sentence-transformers/all-MiniLM-L6-v2",
     });
 }
-// Embedding mock qui ne fait rien (Chroma va utiliser le sien)
-// class EmptyEmbeddings implements Embeddings {
-//     async embedDocuments(texts: string[]): Promise<number[][]> {
-//         return texts.map(() => []);
-//     }
-//     async embedQuery(text: string): Promise<number[]> {
-//         return [];
-//     }
-// }
 

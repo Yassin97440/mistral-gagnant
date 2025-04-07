@@ -3,6 +3,7 @@ import { NotionClient } from "./NotionClient";
 import { createChromaClient } from "../database/ChromaHandler";
 import type { Chroma } from "@langchain/community/vectorstores/chroma";
 import { NOTION_API_KEY, NOTION_DATABASE_ID } from "../varEnv";
+import { CustomJsonSplitter } from "./CustomJsonSplitter";
 
 export class DocumentHandler {
     private BATCH_SIZE = 50;
@@ -12,7 +13,7 @@ export class DocumentHandler {
     constructor() {
         this.chromaClient = createChromaClient();
         this.textSplitter = new RecursiveCharacterTextSplitter({
-            chunkSize: 1000,
+            chunkSize: 1500,
             chunkOverlap: 200,
         });
     }
@@ -38,13 +39,17 @@ export class DocumentHandler {
     //TODO: besoin d'optimiser et retravailler le chunckings des documents. Les réponses sur les tests sont allucinatoires et mélanges un peu tout lol
     private async splitDocument(doc: BlockData) {
         // D'abord splitter le contenu sans métadonnées
+        const splitter = new CustomJsonSplitter({ chunkSize: 1000, chunkOverlap: 300 });
+
+        const jsonChunks = splitter.split(doc.content);
+
         const splits = await this.textSplitter.splitDocuments([{
             pageContent: doc.content,
             metadata: {} // Laisser vide pour l'instant
         }]);
         
         // Ensuite, enrichir chaque chunk avec des métadonnées spécifiques
-        return splits.map((split, index) => {
+        return jsonChunks.map((split, index) => {
             // Métadonnées communes à tous les chunks
             split.metadata = {
                 create_date: doc.createdAt,
