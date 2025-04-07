@@ -7,18 +7,21 @@ import { pull } from "langchain/hub";
 import type { ChatMistralAI } from "@langchain/mistralai";
 import MistralClient from "./MistralClient";
 import type { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
+import Retriever from "./Retriever";
 
 export class Main {
     private chromaClient: Chroma;
     private promptTemplate!: ChatPromptTemplate;
     private llm: ChatMistralAI
     private emdeddingsFunction: HuggingFaceInferenceEmbeddings
+    private documentRetriever: Retriever
 
     constructor() {
         this.chromaClient = createChromaClient();
         this.getPromptTemplate()
         this.llm = new MistralClient().client
         this.emdeddingsFunction = getEmbeddings();
+        this.documentRetriever = new Retriever();
     }
     public async askQuestion(conversation: ChatMessage[]) {
 
@@ -31,6 +34,10 @@ export class Main {
             question: conversation
         })
 
+    }
+
+    public getMistralLlm(): ChatMistralAI {
+        return this.llm
     }
 
     async getPromptTemplate() {
