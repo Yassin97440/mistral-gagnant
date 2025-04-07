@@ -24,7 +24,6 @@ export class Main {
 
         const lastQuestion: ChatMessage = conversation[conversation.length - 1] ?? { role: 'user', content: '' }
 
-        const embeddedQuestion = await this.emdeddingsFunction.embedQuery(lastQuestion.content)
         //on retrive à partir de la question
         const retrievedDocs = await this.retrieveContext({ question: lastQuestion.content })
         return this.generateResponse({

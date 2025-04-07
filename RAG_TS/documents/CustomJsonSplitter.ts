@@ -33,7 +33,7 @@ export class CustomJsonSplitter {
     const splitter = new RecursiveCharacterTextSplitter({
       chunkSize: this.chunkSize,
       chunkOverlap: this.chunkOverlap,
-      separators: ["\n\n", "\n", ".", " ", ""], // découpage intelligent
+      separators: ["\n\n", "\n", "."], // découpage intelligent
     });
   
     const docs = await splitter.createDocuments([rawText]);

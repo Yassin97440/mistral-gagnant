@@ -28,7 +28,6 @@ export class DocumentHandler {
             const splits = await this.splitDocument(doc);
             // Créer des IDs uniques pour chaque chunk
             const chunkIds = splits.map((_, index) => `${doc.id}-chunk-${index}`);
-
             await this.chromaClient.addDocuments(splits);
             totalChunksAddedToDb += 1;
             console.warn("CHUNCKED ADDED IN CHROMA ");

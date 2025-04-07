@@ -34,6 +34,7 @@ npm run dev
 cd RAG_TS
 npm install
 npm start
+docker pull chromadb/chroma:0.6.3 
 ```
 
 ## 🔧 Technologies utilisées

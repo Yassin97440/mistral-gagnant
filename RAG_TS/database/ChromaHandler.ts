@@ -9,7 +9,7 @@ export function createChromaClient() {
     // Utilisation de l'embedding par défaut via notre méthode
 
     const vectorStore = new Chroma(embeddingFunction, {
-        collectionName: "improve-chuncking",
+        collectionName: "rag-0.1",
         url: "http://localhost:8000",
     });
 
