@@ -8,18 +8,34 @@ import { CustomJsonSplitter } from "./CustomJsonSplitter";
 export class DocumentHandler {
     private BATCH_SIZE = 50;
     private chromaClient: Chroma;
-    private textSplitter: RecursiveCharacterTextSplitter;
+    private chunkSize : number
+    private chunkOverlap : number
 
-    constructor() {
+    constructor(
+        chunkSize: number,
+        chunkOverlap: number) {
         this.chromaClient = createChromaClient();
-        this.textSplitter = new RecursiveCharacterTextSplitter({
-            chunkSize: 1500,
-            chunkOverlap: 200,
-        });
+        this.chunkSize = chunkSize;
+        this.chunkOverlap = chunkOverlap;
+
     }
 
+    async processAllDocumentsWithPagination() {
 
-    private async processDocumentsBatch(documents: BlockData[]) {
+        const allDocuments = await this.getAllDocumentsFromNotionDb();
+
+        console.log(`Total documents à traiter : ${allDocuments}`);
+
+        for (let i = 0; i < allDocuments.length; i += this.BATCH_SIZE) {
+            const batch = allDocuments.slice(i, i + this.BATCH_SIZE);
+            console.log(`Traitement du lot ${i / this.BATCH_SIZE + 1}`);
+            await this.processDocumentsBatch(batch);
+        }
+
+        console.log("Traitement terminé !");
+    }
+
+ private async processDocumentsBatch(documents: BlockData[]) {
         let totalChunksAddedToDb = 0;
         for (const doc of documents) {
             // console.log("🚀 ~ DocumentHandler ~ processDocumentsBatch ~ doc:", doc)
@@ -35,10 +51,31 @@ export class DocumentHandler {
         console.log("🚀 ~ DocumentHandler ~ processDocumentsBatch ~ totalChunksAddedToDb for chunck:", totalChunksAddedToDb)
     }
 
+    async getAllDocumentsFromNotionDb(): Promise<BlockData[]> {
+        const notionClient = this.getNotionClient();
+        const pages = await notionClient.getPagesDataFromDatabase(NOTION_DATABASE_ID);
+
+        let allDocumentsContents: BlockData[] = [];
+        for (let i = 0; i < pages.length; i++) {
+
+            allDocumentsContents.push(...await notionClient.getPageContent(pages[i]))
+            console.info("🚀 ~ DocumentHandler ~ getAllDocumentsFromNotionDb ~ allDocumentsContents: page terminé ", i)
+
+        }
+        return allDocumentsContents;
+    }
+
+    private getNotionClient() {
+        return new NotionClient(NOTION_API_KEY);
+    }
+
+   
+
     //TODO: besoin d'optimiser et retravailler le chunckings des documents. Les réponses sur les tests sont allucinatoires et mélanges un peu tout lol
     private async splitDocument(doc: BlockData) {
+
         // D'abord splitter le contenu sans métadonnées
-        const splitter = new CustomJsonSplitter({ chunkSize: 1500, chunkOverlap: 300 });
+        const splitter = new CustomJsonSplitter({ chunkSize: this.chunkSize, chunkOverlap: this.chunkOverlap });
 
         const jsonChunks = await splitter.splitJsonWithLangchain(doc.content);
 
@@ -70,39 +107,9 @@ export class DocumentHandler {
         });
     }
 
-    async getAllDocumentsFromNotionDb(): Promise<BlockData[]> {
-        const notionClient = this.getNotionClient();
-        const pages = await notionClient.getPagesDataFromDatabase(NOTION_DATABASE_ID);
-
-        let allDocumentsContents: BlockData[] = [];
-        for (let i = 0; i < pages.length; i++) {
-
-            allDocumentsContents.push(...await notionClient.getPageContent(pages[i]))
-            console.info("🚀 ~ DocumentHandler ~ getAllDocumentsFromNotionDb ~ allDocumentsContents: page terminé ", i)
-
-        }
-        return allDocumentsContents;
-    }
-
-    async processAllDocumentsWithPagination() {
 
 
-        const allDocuments = await this.getAllDocumentsFromNotionDb();
 
-        console.log(`Total documents à traiter : ${allDocuments}`);
-
-        for (let i = 0; i < allDocuments.length; i += this.BATCH_SIZE) {
-            const batch = allDocuments.slice(i, i + this.BATCH_SIZE);
-            console.log(`Traitement du lot ${i / this.BATCH_SIZE + 1}`);
-            await this.processDocumentsBatch(batch);
-        }
-
-        console.log("Traitement terminé !");
-    }
-
-    private getNotionClient() {
-        return new NotionClient(NOTION_API_KEY);
-    }
 }
 
 export interface BlockData {

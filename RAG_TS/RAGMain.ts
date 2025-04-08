@@ -4,7 +4,7 @@ import { DocumentHandler } from "./documents/DocumentHandler";
 class RAGMain {
     public static async main() {
         try {
-            const docHandler = new DocumentHandler();
+            const docHandler = new DocumentHandler(2500,300);
 
             docHandler.processAllDocumentsWithPagination();
 
