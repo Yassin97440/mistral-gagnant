@@ -1,14 +1,15 @@
 import { Chroma } from "@langchain/community/vectorstores/chroma";
 import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
+import { Document } from "@langchain/core/documents";
 
 const runtimeConfig = useRuntimeConfig()
 
 
-export function createChromaClient() {
+export function createChromaClient(collectionName: string) {
     const embeddingFunction = getEmbeddings();
 
     const vectorStore = new Chroma(embeddingFunction, {
-        collectionName: "rag-0.1",
+        collectionName: collectionName,
         url: "http://localhost:8000",
     });
 

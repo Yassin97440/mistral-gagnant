@@ -7,30 +7,30 @@ import { pull } from "langchain/hub";
 import type { ChatMistralAI } from "@langchain/mistralai";
 import MistralClient from "./MistralClient";
 import type { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
-import Retriever from "./Retriever";
+import DocumentRetriever from "./documents/Retriever";
 
 export class Main {
     private chromaClient: Chroma;
     private promptTemplate!: ChatPromptTemplate;
     private llm: ChatMistralAI
     private emdeddingsFunction: HuggingFaceInferenceEmbeddings
-    private documentRetriever: Retriever
+    private documentRetriever: DocumentRetriever
 
     constructor() {
-        this.chromaClient = createChromaClient();
+        this.chromaClient = createChromaClient("rag-0.1");
+        
         this.getPromptTemplate()
         this.llm = new MistralClient().client
         this.emdeddingsFunction = getEmbeddings();
-        this.documentRetriever = new Retriever();
+        this.documentRetriever = new DocumentRetriever();
     }
     public async askQuestion(conversation: ChatMessage[]) {
 
         const lastQuestion: ChatMessage = conversation[conversation.length - 1] ?? { role: 'user', content: '' }
 
-        //on retrive à partir de la question
-        const retrievedDocs = await this.retrieveContext({ question: lastQuestion.content })
+        const retrievedDocuments = await this.documentRetriever.getRelevantDocuments(lastQuestion.content)
         return this.generateResponse({
-            context: retrievedDocs,
+            context: retrievedDocuments,
             question: conversation
         })
 
