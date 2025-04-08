@@ -30,7 +30,7 @@
         <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       </template>
 
-      <v-app-bar-title>BioRAG Chat</v-app-bar-title>
+      <v-app-bar-title>Mistral Gagnant</v-app-bar-title>
     </v-app-bar>
 
     <v-main>
