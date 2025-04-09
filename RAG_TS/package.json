@@ -7,7 +7,8 @@
     "@langchain/community": "^0.3.37",
     "@langchain/mistralai": "^0.2.0",
     "@notionhq/client": "^2.3.0",
-    "cheerio": "^1.0.0"
+    "cheerio": "^1.0.0",
+    "dotenv": "^16.4.7"
   },
   "devDependencies": {
     "@huggingface/inference": "^2.8.1",
