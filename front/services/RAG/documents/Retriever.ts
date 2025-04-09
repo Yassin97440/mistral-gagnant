@@ -3,7 +3,7 @@ import { SelfQueryRetriever } from "langchain/retrievers/self_query";
 import { MultiVectorRetriever } from "langchain/retrievers/multi_vector";
 import { LLMChainExtractor } from "langchain/retrievers/document_compressors/chain_extract";
 import { RunnableSequence } from "@langchain/core/runnables";
-import MistralClient from "../MistralClient";
+import MistralClient from "../../Chat/MistralClient";
 import { ChatMistralAI } from "@langchain/mistralai";
 import type { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
 import { createChromaClient, getEmbeddings } from "../ChromaUtils";

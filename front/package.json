@@ -12,8 +12,8 @@
   "dependencies": {
     "@huggingface/inference": "^2.8.1",
     "@langchain/community": "^0.3.37",
-    "@langchain/core": "^0.3.43",
-    "@langchain/langgraph": "^0.2.60",
+    "@langchain/core": "^0.3.44",
+    "@langchain/langgraph": "^0.2.63",
     "@langchain/mistralai": "^0.2.0",
     "@mdi/font": "^7.4.47",
     "@pinia/nuxt": "^0.10.1",
@@ -23,6 +23,7 @@
     "nuxt": "^3.16.0",
     "pinia": "^3.0.1",
     "sharp": "^0.33.5",
+    "uuid": "^11.1.0",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0",
     "vuetify-nuxt-module": "^0.18.6"

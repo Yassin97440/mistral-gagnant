@@ -1,4 +1,4 @@
-import { Main } from "~~/services/RAG/Main"
+import { Main } from "~~/services/Chat/Main"
 const main = new Main()
 
 export default defineEventHandler(async (event) => {

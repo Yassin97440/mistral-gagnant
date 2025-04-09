@@ -1,6 +1,5 @@
 import { Chroma } from "@langchain/community/vectorstores/chroma";
 import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
-import { Document } from "@langchain/core/documents";
 
 const runtimeConfig = useRuntimeConfig()
 

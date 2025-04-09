@@ -1,5 +1,5 @@
 import type { Chroma } from "@langchain/community/vectorstores/chroma";
-import { createChromaClient, getEmbeddings } from "./ChromaUtils";
+import { createChromaClient, getEmbeddings } from "../RAG/ChromaUtils";
 import { Annotation } from "@langchain/langgraph";
 import type { Document } from "langchain/document";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
@@ -7,7 +7,7 @@ import { pull } from "langchain/hub";
 import type { ChatMistralAI } from "@langchain/mistralai";
 import MistralClient from "./MistralClient";
 import type { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
-import DocumentRetriever from "./documents/Retriever";
+import DocumentRetriever from "../RAG/documents/Retriever";
 
 export class Main {
     private chromaClient: Chroma;
