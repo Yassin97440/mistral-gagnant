@@ -13,6 +13,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import DocumentRetriever from "../RAG/documents/Retriever";
 import app from "../memory/MemoryManager";
+import { compile } from "../RAG/Pipeline";
 
 
 export class Main {
@@ -23,7 +24,7 @@ export class Main {
     private documentRetriever: DocumentRetriever
     private app = app
     private config = { configurable: { thread_id: uuidv4() } };
-
+    private graph = compile()
     constructor() {
         this.chromaClient = createChromaClient("rag-0.1");
         
@@ -33,20 +34,17 @@ export class Main {
         this.documentRetriever = new DocumentRetriever();
     }
     public async askQuestion(conversation: ChatMessage[]) {
-        const lastMessage = conversation[conversation.length - 1] || { role: 'user', content: 'hello' };
-        console.log("🚀 ~ Main ~ askQuestion ~ lastMessage:", lastMessage)
 
-       const response = await this.app.invoke({ messages: lastMessage as Messages }, this.config);
-       console.log("🚀 ~ Main ~ askQuestion ~ response:", response.messages[response.messages.length - 1]);
-       return response.messages[response.messages.length - 1]?.content;
-
+    //    console.log("🚀 ~ Main ~ askQuestion ~ response:", response.messages[response.messages.length - 1]);
+    //    return response.messages[response.messages.length - 1]?.content;
+        this.generateResponseTestRag({context: [], question: conversation})
         // const lastQuestion: ChatMessage = conversation[conversation.length - 1] ?? { role: 'user', content: '' }
 
-        // const retrievedDocuments = await this.documentRetriever.getRelevantDocuments(lastQuestion.content)
-        // return this.generateResponse({
-        //     context: retrievedDocuments,
-        //     question: conversation
-        // })
+        // // const retrievedDocuments = await this.documentRetriever.getRelevantDocuments(lastQuestion.content)
+        // // return this.generateResponse({
+        // //     context: retrievedDocuments,
+        // //     question: conversation
+        // // })
 
     }
 
@@ -62,14 +60,35 @@ export class Main {
 
     public generateResponse = async (state: typeof StateAnnotation.State) => {
         const docsContent = state.context.map((doc) => doc.pageContent).join("\n");
+        const lastMessage = state.question[state.question.length - 1] || { role: 'user', content: 'hello' };
+        console.log("🚀 ~ Main ~ askQuestion ~ lastMessage:", lastMessage)
+
         const messages = await this.promptTemplate.invoke({
             question: state.question,
             context: docsContent,
         });
-        const response = await this.llm.invoke(messages);
-        console.log("🚀 ~ Main ~ generateResponse= ~ response:", response.content)
-        return response.content;
+        
+        const response = await this.app.invoke(messages, this.config);
+        console.log("🚀 ~ Main ~ generateResponse= ~ response:", response.messages[response.messages.length - 1])
+        return response.messages[response.messages.length - 1]?.content;
     };
+
+    public generateResponseTestRag = async (state: typeof StateAnnotation.State) => {
+        const lastMessage = state.question[state.question.length - 1] || { role: 'user', content: 'hello' };
+        console.log("🚀 ~ Main ~ askQuestion ~ lastMessage:", lastMessage)
+
+        for await (const step of await this.graph.stream({messages: lastMessage as Messages}, {
+            streamMode: "values",
+          })) {
+            const lastMessage = step.messages[step.messages.length - 1];
+            this.prettyPrint(lastMessage);
+            console.log("-----\n");
+          }
+    };
+
+    prettyPrint(message: ChatMessage) {
+        console.log(message.content)
+    }
 
     public async retrieveContext(state: typeof InputStateAnnotation.State) {
         const retrievedDocs = await this.chromaClient.similaritySearch(state.question)
