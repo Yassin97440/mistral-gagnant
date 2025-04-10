@@ -58,7 +58,7 @@ export class DocumentHandler {
         let allDocumentsContents: BlockData[] = [];
         for (let i = 0; i < pages.length; i++) {
 
-            allDocumentsContents.push(...await notionClient.getPageContent(pages[i]))
+            allDocumentsContents.push(await notionClient.getPageContent(pages[i]))
             console.info("🚀 ~ DocumentHandler ~ getAllDocumentsFromNotionDb ~ allDocumentsContents: page terminé ", i)
 
         }
@@ -69,9 +69,7 @@ export class DocumentHandler {
         return new NotionClient(NOTION_API_KEY);
     }
 
-   
 
-    //TODO: besoin d'optimiser et retravailler le chunckings des documents. Les réponses sur les tests sont allucinatoires et mélanges un peu tout lol
     private async splitDocument(doc: BlockData) {
 
         // D'abord splitter le contenu sans métadonnées
@@ -82,16 +80,14 @@ export class DocumentHandler {
 
         // Ensuite, enrichir chaque chunk avec des métadonnées spécifiques
         return jsonChunks.map((split, index) => {
-            // Métadonnées communes à tous les chunks
             split.metadata = {
                 "create_date": doc.createdAt,
                 "id": doc.id,
                 "title": doc.title,
-                "parent_id": doc.parentId,
+                "parent_id": doc.id,
                 "document_type": doc.documentType,
                 "last_edited": doc.lastEdited,
                 
-                // Métadonnées spécifiques au chunk
                 "chunk_index": index,
                 "chunk_total": jsonChunks.length,
                 
@@ -99,7 +95,6 @@ export class DocumentHandler {
                 "chunk_summary": `Partie ${index+1}/${jsonChunks.length} de ${doc.title}`,
                 "chunk_position": index === 0 ? "début" : index === jsonChunks.length - 1 ? "fin" : "milieu",
                 
-                // Optionnel: analyse du contenu du chunk (mots-clés, entités, etc.)
                 // chunk_keywords: extractKeywords(split.pageContent)
             };
             console.log("🚀 ~ DocumentHandler ~ returnjsonChunks.map ~ split:", split)
@@ -114,11 +109,12 @@ export class DocumentHandler {
 
 export interface BlockData {
     id: string;
+    pageId: string;
+    parentId: string;
     title: string;
     authorName: string,
     content: string;
     createdAt: Date;
-    parentId?: string;
     documentType?: string[];
     lastEdited?: Date;
 }

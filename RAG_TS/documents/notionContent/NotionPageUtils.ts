@@ -14,7 +14,7 @@ export class  NotionPageUtils {
     }
 
     static getPageParentId(page: any): string{ 
-        return ""
+        return page.properties.Parent.relation[0]?.id;
     }
 
     static getPageCretiondate(page: any): Date {

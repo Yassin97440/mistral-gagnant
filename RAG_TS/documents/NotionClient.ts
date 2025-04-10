@@ -5,6 +5,7 @@ import { NotionPageUtils } from './notionContent/NotionPageUtils';
 
 interface NotionPageData {
     id: string,
+    parentId: string,
     title: string,
     categories: string[],
     authorName: string,
@@ -51,8 +52,11 @@ export class NotionClient {
 
             // Extraire les IDs de chaque page dans les résultats
             const pagesData = response.results.map(page => {
+                // Vérifier si la page a des propriétés avant d'y accéder
+
                 const pageData: NotionPageData = {
                     id: NotionPageUtils.getPageId(page),
+                    parentId: NotionPageUtils.getPageParentId(page),
                     title: NotionPageUtils.getPageTitle(page),
                     authorName: NotionPageUtils.getPageAuthor(page),
                     createdDate: NotionPageUtils.getPageCretiondate(page),
@@ -60,7 +64,6 @@ export class NotionClient {
                     categories: NotionPageUtils.getPageCategories(page),
                     status: NotionPageUtils.getPageStatus(page)
                 }
-                console.log("🚀 ~ NotionClient ~ getPagesDataFromDatabase ~ pageData:", pageData)
                 return pageData
             });
 
@@ -71,6 +74,7 @@ export class NotionClient {
             throw error;
         }
     }
+
 
 
     async updatePage(pageId: string, properties: any): Promise<GetPageResponse> {
@@ -90,18 +94,9 @@ export class NotionClient {
      * @param blockId L'ID du bloc à récupérer
      * @returns L'objet JSON représentant le bloc
      */
-    getBlockContent(block: any, page: NotionPageData): BlockData {
-        const newBlock: BlockData = {
-            id: block?.parent?.page_id,
-            content: "",
-            title: page.title,
-            createdAt: block?.created_time,
-            parentId: page.id,
-            documentType: page.categories,
-            authorName: page.authorName
-        };
-        newBlock.content += block?.paragraph?.rich_text.map((richTxt: any) => richTxt.plain_text);
-        return newBlock;
+    extractBlockContent(block: any, page: NotionPageData): string {
+        var content = ""
+        return content += block?.paragraph?.rich_text.map((richTxt: any) => richTxt.plain_text).join("");
     }
 
     /**
@@ -109,8 +104,23 @@ export class NotionClient {
      * @param blocks Tableau d'IDs de blocs à récupérer
      * @returns Un tableau d'objets JSON représentant les blocs
      */
-    getMultipleBlocks(blocks: [], page: NotionPageData): BlockData[] {
-        return blocks.map(blockId => this.getBlockContent(blockId, page));
+    extractAllBlocksData(blocks: [], page: NotionPageData): BlockData {
+        const newBlock: BlockData = {
+            id: page.id,
+            parentId: page.parentId,
+            pageId: page.id,
+            content: "",
+            title: page.title,
+            createdAt: page.createdDate,
+            documentType: page.categories,
+            authorName: page.authorName
+        };
+        const content = blocks.map(blockId => this.extractBlockContent(blockId, page));
+        // Filtrer les chaînes "undefined" et les chaînes vides avant de joindre
+        newBlock.content = content
+            .filter(text => text !== "undefined" && text !== "")
+            .join("");
+        return newBlock;
 
     }
 
@@ -125,11 +135,13 @@ export class NotionClient {
         }
     }
 
-    async getPageContent(page: NotionPageData): Promise<BlockData[]> {
+    async getPageContent(page: NotionPageData): Promise<BlockData> {
         try {
             const pageBlocks = await this.getPageBlocks(page.id);
             // console.log("🚀 ~ NotionClient ~ getPageContent ~ pageBlocks:", pageBlocks)
-            const allPageContent = this.getMultipleBlocks(pageBlocks.results, page);
+            // console.log("🚀 ~ NotionClient ~ getPageContent ~ pageBlocks.parent:", pageBlocks.results[0].parent)
+            const allPageContent =  this.extractAllBlocksData(pageBlocks.results, page);
+            console.log("🚀 ~ NotionClient ~ getPageContent ~ allPageContent:", allPageContent)
             return allPageContent;
 
         } catch (error) {
