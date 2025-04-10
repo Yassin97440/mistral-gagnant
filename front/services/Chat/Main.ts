@@ -14,6 +14,9 @@ import { v4 as uuidv4 } from "uuid";
 import DocumentRetriever from "../RAG/documents/Retriever";
 import app from "../memory/MemoryManager";
 import { compile } from "../RAG/Pipeline";
+import type { BaseMessage } from "@langchain/core/messages";
+import { isAIMessage } from "@langchain/core/messages";
+import type { AIMessage } from "@langchain/core/messages";
 
 
 export class Main {
@@ -27,7 +30,7 @@ export class Main {
     private graph = compile()
     constructor() {
         this.chromaClient = createChromaClient("rag-0.1");
-        
+
         this.getPromptTemplate()
         this.llm = new MistralClient().client
         this.emdeddingsFunction = getEmbeddings();
@@ -35,9 +38,9 @@ export class Main {
     }
     public async askQuestion(conversation: ChatMessage[]) {
 
-    //    console.log("🚀 ~ Main ~ askQuestion ~ response:", response.messages[response.messages.length - 1]);
-    //    return response.messages[response.messages.length - 1]?.content;
-        this.generateResponseTestRag({context: [], question: conversation})
+        //    console.log("🚀 ~ Main ~ askQuestion ~ response:", response.messages[response.messages.length - 1]);
+        //    return response.messages[response.messages.length - 1]?.content;
+        this.generateResponseTestRag({ context: [], question: conversation })
         // const lastQuestion: ChatMessage = conversation[conversation.length - 1] ?? { role: 'user', content: '' }
 
         // // const retrievedDocuments = await this.documentRetriever.getRelevantDocuments(lastQuestion.content)
@@ -67,7 +70,7 @@ export class Main {
             question: state.question,
             context: docsContent,
         });
-        
+
         const response = await this.app.invoke(messages, this.config);
         console.log("🚀 ~ Main ~ generateResponse= ~ response:", response.messages[response.messages.length - 1])
         return response.messages[response.messages.length - 1]?.content;
@@ -77,18 +80,27 @@ export class Main {
         const lastMessage = state.question[state.question.length - 1] || { role: 'user', content: 'hello' };
         console.log("🚀 ~ Main ~ askQuestion ~ lastMessage:", lastMessage)
 
-        for await (const step of await this.graph.stream({messages: lastMessage as Messages}, {
+        for await (const step of await this.graph.stream({ messages: lastMessage as Messages }, {
             streamMode: "values",
-          })) {
+        })) {
             const lastMessage = step.messages[step.messages.length - 1];
             this.prettyPrint(lastMessage);
             console.log("-----\n");
-          }
+        }
     };
 
-    prettyPrint(message: ChatMessage) {
-        console.log(message.content)
-    }
+
+    prettyPrint = (message: BaseMessage) => {
+        let txt = `[${message._getType()}]: ${message.content}`;
+        if ((isAIMessage(message) && message.tool_calls?.length) || 0 > 0) {
+            const tool_calls = (message as AIMessage)?.tool_calls
+                ?.map((tc) => `- ${tc.name}(${JSON.stringify(tc.args)})`)
+                .join("\n");
+            txt += ` \nTools: \n${tool_calls}`;
+        }
+        console.log(txt);
+    };
+
 
     public async retrieveContext(state: typeof InputStateAnnotation.State) {
         const retrievedDocs = await this.chromaClient.similaritySearch(state.question)
