@@ -6,23 +6,18 @@ import {
     MemorySaver,
 } from "@langchain/langgraph";
 import MistralClient from "../Chat/MistralClient";
-import type { ChatMistralAI } from "@langchain/mistralai";
-import type { RunnableSequence } from "@langchain/core/runnables";
 
 import { v4 as uuidv4 } from "uuid";
 import type { ChatMessage } from "@langchain/core/messages";
 
 const config = { configurable: { thread_id: uuidv4() } };
 const llm = new MistralClient().client;
-// Define the function that calls the model
 const callModel = async (state: typeof MessagesAnnotation.State) => {
     const response = await llm.invoke(state.messages);
     return { messages: response };
 };
 
-// Define a new graph
 const workflow = new StateGraph(MessagesAnnotation)
-    // Define the node and edge
     .addNode("model", callModel)
     .addEdge(START, "model")
     .addEdge("model", END);
@@ -31,9 +26,10 @@ const workflow = new StateGraph(MessagesAnnotation)
 const memory = new MemorySaver();
 const app = workflow.compile({ checkpointer: memory });
 const sendMessage = async (message: ChatMessage[]) => {
-    const output = await app.invoke({ messages: message }, config);
+    const output = await app.invoke({ messages: message[message.length - 1] }, config);
    
     console.log(output.messages[output.messages.length - 1]);
+    return output.messages[output.messages.length - 1];
 }
 
 export default app;
