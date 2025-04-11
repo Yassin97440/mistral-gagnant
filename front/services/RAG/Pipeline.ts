@@ -4,12 +4,16 @@ import {
     SystemMessage,
     ToolMessage,
 } from "@langchain/core/messages";
-import { MessagesAnnotation, StateGraph } from "@langchain/langgraph";
+import { MemorySaver, MessagesAnnotation, StateGraph } from "@langchain/langgraph";
 import { ToolNode, toolsCondition } from "@langchain/langgraph/prebuilt";
-import retrieve from "./agent/Retriver";
+
+import retrieve from "./tool/Retriver";
 import MistralClient from "../Chat/MistralClient";
+import { getNewMemoryConfig } from "../memory/MemoryUtils";
 
 const llm = new MistralClient().client;
+const tools = new ToolNode([retrieve]);
+const memory = new MemorySaver;
 // Step 1: Generate an AIMessage that may include a tool-call to be sent.
 async function queryOrRespond(state: typeof MessagesAnnotation.State) {
     const llmWithTools = llm.bindTools([retrieve]);
@@ -18,15 +22,14 @@ async function queryOrRespond(state: typeof MessagesAnnotation.State) {
     return { messages: [response] };
 }
 
-// Step 2: Execute the retrieval.
-const tools = new ToolNode([retrieve]);
 
 // Step 3: Generate a response using the retrieved content.
 async function generate(state: typeof MessagesAnnotation.State) {
     // Get generated ToolMessages
     let recentToolMessages = [];
-    for (let i = state["messages"].length - 1; i >= 0; i--) {
-        let message = state["messages"][i];
+    const messages = state["messages"]
+    for (let i = messages.length - 1; i >= 0; i--) {
+        let message = messages[i];
         if (message instanceof ToolMessage) {
             recentToolMessages.push(message);
         } else {
@@ -75,7 +78,7 @@ function compile() {
         .addEdge("tools", "generate")
         .addEdge("generate", "__end__");
 
-    const graph = graphBuilder.compile();
+    const graph = graphBuilder.compile({ checkpointer: memory });
     return graph
 }
 
