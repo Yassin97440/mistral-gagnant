@@ -12,7 +12,7 @@ import MistralClient from "./MistralClient";
 import { v4 as uuidv4 } from "uuid";
 
 import DocumentRetriever from "../RAG/documents/Retriever";
-import app from "../memory/MemoryManager";
+import { getNewMemoryConfig } from "../memory/MemoryUtils";
 import { compile } from "../RAG/Pipeline";
 import type { BaseMessage } from "@langchain/core/messages";
 import { isAIMessage } from "@langchain/core/messages";
@@ -25,8 +25,7 @@ export class Main {
     private llm: ChatMistralAI
     private emdeddingsFunction: HuggingFaceInferenceEmbeddings
     private documentRetriever: DocumentRetriever
-    private app = app
-    private config = { configurable: { thread_id: uuidv4() } };
+    private config = getNewMemoryConfig();
     private graph = compile()
     constructor() {
         this.chromaClient = createChromaClient("rag-0.1");
@@ -38,17 +37,8 @@ export class Main {
     }
     public async askQuestion(conversation: ChatMessage[]) {
 
-        //    console.log("🚀 ~ Main ~ askQuestion ~ response:", response.messages[response.messages.length - 1]);
-        //    return response.messages[response.messages.length - 1]?.content;
         this.generateResponseTestRag({ context: [], question: conversation })
-        // const lastQuestion: ChatMessage = conversation[conversation.length - 1] ?? { role: 'user', content: '' }
-
-        // // const retrievedDocuments = await this.documentRetriever.getRelevantDocuments(lastQuestion.content)
-        // // return this.generateResponse({
-        // //     context: retrievedDocuments,
-        // //     question: conversation
-        // // })
-
+      
     }
 
     async getPromptTemplate() {
@@ -62,16 +52,10 @@ export class Main {
 
 
     public generateResponse = async (state: typeof StateAnnotation.State) => {
-        const docsContent = state.context.map((doc) => doc.pageContent).join("\n");
         const lastMessage = state.question[state.question.length - 1] || { role: 'user', content: 'hello' };
         console.log("🚀 ~ Main ~ askQuestion ~ lastMessage:", lastMessage)
 
-        const messages = await this.promptTemplate.invoke({
-            question: state.question,
-            context: docsContent,
-        });
-
-        const response = await this.app.invoke(messages, this.config);
+        const response = await this.graph.invoke({ messages: lastMessage as Messages }, this.config);
         console.log("🚀 ~ Main ~ generateResponse= ~ response:", response.messages[response.messages.length - 1])
         return response.messages[response.messages.length - 1]?.content;
     };
@@ -82,6 +66,7 @@ export class Main {
 
         for await (const step of await this.graph.stream({ messages: lastMessage as Messages }, {
             streamMode: "values",
+            configurable: { thread_id: this.config.configurable.thread_id }
         })) {
             const lastMessage = step.messages[step.messages.length - 1];
             this.prettyPrint(lastMessage);
@@ -91,7 +76,7 @@ export class Main {
 
 
     prettyPrint = (message: BaseMessage) => {
-        let txt = `[${message._getType()}]: ${message.content}`;
+        let txt = `[${message.getType()}]: ${message.content}`;
         if ((isAIMessage(message) && message.tool_calls?.length) || 0 > 0) {
             const tool_calls = (message as AIMessage)?.tool_calls
                 ?.map((tc) => `- ${tc.name}(${JSON.stringify(tc.args)})`)
@@ -102,7 +87,7 @@ export class Main {
     };
 
 
-    public async retrieveContext(state: typeof InputStateAnnotation.State) {
+    async retrieveContext(state: typeof InputStateAnnotation.State) {
         const retrievedDocs = await this.chromaClient.similaritySearch(state.question)
         return retrievedDocs
     }
