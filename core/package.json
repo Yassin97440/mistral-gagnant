@@ -7,6 +7,8 @@
   "scripts": {
     "build": "tsc",
     "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "prepare": "npm run build",
     "docs": "typedoc"
   },
@@ -17,23 +19,24 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/jest": "^29.5.14",
-    "@types/node": "^22.14.1",
-    "jest": "^29.7.0",
-    "ts-jest": "^29.3.1",
-    "typedoc": "^0.28.2",
-    "typescript": "^5.8.3",
     "@huggingface/inference": "^2.8.1",
+    "@jest/globals": "^29.7.0",
     "@langchain/community": "^0.3.37",
     "@langchain/core": "^0.3.43",
     "@langchain/langgraph": "^0.2.60",
     "@langchain/mistralai": "^0.2.0",
-    "chromadb": "^2.1.0",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.14.1",
+    "chromadb": "^2.2.0",
     "chromadb-default-embed": "latest",
-    "langchain": "^0.3.19"
+    "jest": "^29.7.0",
+    "langchain": "^0.3.19",
+    "ts-jest": "^29.3.1",
+    "ts-node": "^10.9.2",
+    "typedoc": "^0.28.2",
+    "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@pinecone-database/pinecone": "^5.1.1",
     "@langchain/community": "^0.3.37",
     "@langchain/mistralai": "^0.2.0",
     "@notionhq/client": "^2.3.0",
