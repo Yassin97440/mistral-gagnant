@@ -5,8 +5,8 @@ import { getEmbeddings } from "../embedding/HFSentence-transformers";
 export class DocumentHandler {
     private BATCH_SIZE = 50;
     private chromaClient: ChromaAdapter;
-    private chunkSize : number
-    private chunkOverlap : number
+    private chunkSize: number
+    private chunkOverlap: number
 
     constructor(
         chunkSize: number,
@@ -35,7 +35,7 @@ export class DocumentHandler {
         console.log("Traitement terminé !");
     }
 
- private async processDocumentsBatch(documents: BlockData[]) {
+    private async processDocumentsBatch(documents: BlockData[]) {
         let totalChunksAddedToDb = 0;
         for (const doc of documents) {
             // console.log("🚀 ~ DocumentHandler ~ processDocumentsBatch ~ doc:", doc)
@@ -87,14 +87,14 @@ export class DocumentHandler {
                 "parent_id": doc.id,
                 "document_type": doc.documentType,
                 "last_edited": doc.lastEdited,
-                
+
                 "chunk_index": index,
                 "chunk_total": jsonChunks.length,
-                
+
                 // Information sur le contenu du chunk
-                "chunk_summary": `Partie ${index+1}/${jsonChunks.length} de ${doc.title}`,
+                "chunk_summary": `Partie ${index + 1}/${jsonChunks.length} de ${doc.title}`,
                 "chunk_position": index === 0 ? "début" : index === jsonChunks.length - 1 ? "fin" : "milieu",
-                
+
                 // chunk_keywords: extractKeywords(split.pageContent)
             };
             console.log("🚀 ~ DocumentHandler ~ returnjsonChunks.map ~ split:", split)

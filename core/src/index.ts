@@ -1,5 +1,5 @@
 export * from './data';
-// export * from './processing';
+export * from './processing';
 // export * from './tools';
 // export * from './agents';
 // export * from './workflow';

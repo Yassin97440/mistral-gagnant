@@ -6,7 +6,7 @@ import { ChromaLibArgs, ChromaDeleteParams } from "@langchain/community/vectorst
 import { v1 as uuidv1, v4 as uuidv4 } from "uuid";
 
 export class ChromaAdapter extends VectorStore {
-    declare FilterType: Where;
+  declare FilterType: Where;
 
   index?: ChromaClient;
 
@@ -35,11 +35,11 @@ export class ChromaAdapter extends VectorStore {
     this.collectionName = ensureCollectionName(args.collectionName);
     this.collectionMetadata = args.collectionMetadata;
     this.clientParams = args.clientParams;
-    if ("index" in args) {
-      this.index = args.index;
-    } else if ("url" in args) {
-      this.url = args.url || "http://localhost:8000";
-    }
+    // if ("index" in args) {
+    //   this.index = args.index;
+    // } else if ("url" in args) {
+    //   this.url = args.url || "http://localhost:8000";
+    // }
 
     this.filter = args.filter;
   }
@@ -55,12 +55,14 @@ export class ChromaAdapter extends VectorStore {
   async addDocuments(
     documents: Array<{ pageContent: string; metadata: Record<string, any> }>,
     options?: { ids?: string[] }
-  ): Promise<string[]> {
+  ): Promise<void> {
     const texts = documents.map(({ pageContent }) => pageContent);
-    return this.addVectors(
-      await this.embeddings.embedDocuments(texts),
-      documents,
-      options
+    await this.collection?.add(
+      {
+        ids: options?.ids ?? [],
+        documents: texts,
+        metadatas: documents.map(({ metadata }) => metadata),
+      }
     );
   }
 
@@ -78,7 +80,7 @@ export class ChromaAdapter extends VectorStore {
             ...(this.clientParams ?? {})
           });
         }
-        
+
         try {
           this.collection = await this.index.getCollection({
             name: this.collectionName,
@@ -161,6 +163,18 @@ export class ChromaAdapter extends VectorStore {
     });
     return documentIds;
   }
+
+  /**
+ * Deletes documents from the Chroma database. The documents to be deleted
+ * can be specified by providing an array of `ids` or a `filter` object.
+ * @param params An object containing either an array of `ids` of the documents to be deleted or a `filter` object to specify the documents to be deleted.
+ * @returns A promise that resolves when the specified documents have been deleted from the database.
+ */
+  async delete_collection(collectionName: string): Promise<void> {
+    const collection = await this.ensureCollection();
+    await this.index?.deleteCollection({ name: collectionName });
+  }
+
 
   /**
    * Deletes documents from the Chroma database. The documents to be deleted
@@ -277,7 +291,7 @@ export class ChromaAdapter extends VectorStore {
       };
       docs.push(newDoc);
     }
-    
+
     const instance = new ChromaAdapter(embeddings, dbConfig);
     await instance.addDocuments(docs);
     return instance;
