@@ -9,6 +9,6 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src", "src/utils/notionContent"],
+  "include": ["src", "src/utils/notionContent", "tests/data/connectors/NotionClient.test.ts"],
   "exclude": ["node_modules", "dist"]
 } 

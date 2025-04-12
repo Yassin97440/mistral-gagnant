@@ -1,18 +1,20 @@
 import { NotionClient } from "../../data/connectors/NotionClient";
-import { createChromaClient  } from "../../data/connectors/ChromaHandler";
-import type { Chroma } from "@langchain/community/vectorstores/chroma";
 import { CustomJsonSplitter } from "../splitter/CustomJsonSplitter";
-
+import { ChromaAdapter } from "../../data/connectors/ChromaAdapter";
+import { getEmbeddings } from "../embedding/HFSentence-transformers";
 export class DocumentHandler {
     private BATCH_SIZE = 50;
-    private chromaClient: Chroma;
+    private chromaClient: ChromaAdapter;
     private chunkSize : number
     private chunkOverlap : number
 
     constructor(
         chunkSize: number,
         chunkOverlap: number) {
-        this.chromaClient = createChromaClient("rag-0.1");
+        this.chromaClient = new ChromaAdapter(getEmbeddings(), {
+            collectionName: "rag-0.1",
+            url: "http://localhost:8000/",
+        });
         this.chunkSize = chunkSize;
         this.chunkOverlap = chunkOverlap;
 

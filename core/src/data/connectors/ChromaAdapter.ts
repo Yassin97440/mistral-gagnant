@@ -2,10 +2,8 @@ import { DocumentInterface } from "@langchain/core/documents";
 import { VectorStore } from "@langchain/core/vectorstores";
 import { ChromaClient, ChromaClientParams, Collection, CollectionMetadata, Where } from "chromadb";
 import { EmbeddingsInterface } from "@langchain/core/embeddings";
-import { ChromaLibArgs, Chroma, ChromaDeleteParams } from "@langchain/community/vectorstores/chroma";
+import { ChromaLibArgs, ChromaDeleteParams } from "@langchain/community/vectorstores/chroma";
 import { v1 as uuidv1, v4 as uuidv4 } from "uuid";
-import { HuggingFaceInferenceEmbeddings } from '@langchain/community/embeddings/hf';
-import { describe, test, expect, beforeAll, afterAll, jest } from '@jest/globals';
 
 export class ChromaAdapter extends VectorStore {
     declare FilterType: Where;
@@ -73,24 +71,33 @@ export class ChromaAdapter extends VectorStore {
    */
   async ensureCollection(): Promise<Collection> {
     if (!this.collection) {
-      if (!this.index) {
-        const chromaClient = new (await Chroma.imports()).ChromaClient({
-          path: this.url,
-          ...(this.clientParams ?? {}),
-        });
-        this.index = chromaClient;
-      }
       try {
-        this.collection = await this.index.getOrCreateCollection({
-          name: this.collectionName,
-          ...(this.collectionMetadata && { metadata: this.collectionMetadata }),
-        });
+        if (!this.index) {
+          this.index = new ChromaClient({
+            path: this.url,
+            ...(this.clientParams ?? {})
+          });
+        }
+        
+        try {
+          this.collection = await this.index.getCollection({
+            name: this.collectionName,
+            embeddingFunction: {
+              generate: (texts: string[]) => this.embeddings.embedDocuments(texts)
+            }
+          });
+        } catch (error) {
+          this.collection = await this.index.createCollection({
+            name: this.collectionName,
+            ...(this.collectionMetadata && { metadata: this.collectionMetadata })
+          });
+        }
       } catch (err) {
-        throw new Error(`Chroma getOrCreateCollection error: ${err}`);
+        throw new Error(`Erreur lors de la création/récupération de la collection Chroma: ${err}`);
       }
     }
 
-    return this.collection;
+    return this.collection as Collection;
   }
 
   /**
@@ -260,7 +267,7 @@ export class ChromaAdapter extends VectorStore {
     metadatas: object[] | object,
     embeddings: EmbeddingsInterface,
     dbConfig: ChromaLibArgs
-  ): Promise<Chroma> {
+  ): Promise<ChromaAdapter> {
     const docs: DocumentInterface[] = [];
     for (let i = 0; i < texts.length; i += 1) {
       const metadata = Array.isArray(metadatas) ? metadatas[i] : metadatas;
@@ -270,7 +277,10 @@ export class ChromaAdapter extends VectorStore {
       };
       docs.push(newDoc);
     }
-    return Chroma.fromDocuments(docs, embeddings, dbConfig);
+    
+    const instance = new ChromaAdapter(embeddings, dbConfig);
+    await instance.addDocuments(docs);
+    return instance;
   }
 
   /**
@@ -285,8 +295,8 @@ export class ChromaAdapter extends VectorStore {
     docs: DocumentInterface[],
     embeddings: EmbeddingsInterface,
     dbConfig: ChromaLibArgs
-  ): Promise<Chroma> {
-    const instance = new this(embeddings, dbConfig);
+  ): Promise<ChromaAdapter> {
+    const instance = new ChromaAdapter(embeddings, dbConfig);
     await instance.addDocuments(docs);
     return instance;
   }
@@ -301,8 +311,8 @@ export class ChromaAdapter extends VectorStore {
   static async fromExistingCollection(
     embeddings: EmbeddingsInterface,
     dbConfig: ChromaLibArgs
-  ): Promise<Chroma> {
-    const instance = new this(embeddings, dbConfig);
+  ): Promise<ChromaAdapter> {
+    const instance = new ChromaAdapter(embeddings, dbConfig);
     await instance.ensureCollection();
     return instance;
   }

@@ -18,8 +18,10 @@ export function createChromaClient(collectionName: string) {
     return vectorStore;
 }
 
-
-function getEmbeddings() {
+/**
+ * @deprecated Use getEmbeddings from ../processing/embedding/HFSentence-transformers.ts instead
+ */
+export function getEmbeddings() {
     return new HuggingFaceInferenceEmbeddings({
         apiKey: process.env.HUGGING_FACE_API_KEY,
         model: "sentence-transformers/all-MiniLM-L6-v2",
