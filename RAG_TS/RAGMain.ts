@@ -1,9 +1,10 @@
-import { DocumentHandler } from "./documents/DocumentHandler";
-
+import { DocumentHandler } from "@mistral-gagnant/core/dist/processing/documents/DocumentHandler";
+import dotenv from 'dotenv';
 
 class RAGMain {
     public static async main() {
         try {
+            dotenv.config();
             const docHandler = new DocumentHandler(1000,200);
 
             docHandler.processAllDocumentsWithPagination();
