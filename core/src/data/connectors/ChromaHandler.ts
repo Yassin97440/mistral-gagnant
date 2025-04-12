@@ -1,20 +1,20 @@
 import { Chroma } from "@langchain/community/vectorstores/chroma";
 import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
-import { HUGGING_FACE_API_KEY } from "../varEnv";
+import { HUGGING_FACE_API_KEY } from "../../../../RAG_TS/varEnv";
 
 
 
-export function createChromaClient() {
+export function createChromaClient(collectionName: string) {
     const embeddingFunction = getEmbeddings();
-    // Utilisation de l'embedding par défaut via notre méthode
 
     const vectorStore = new Chroma(embeddingFunction, {
-        collectionName: "rag-0.1",
+        collectionName: collectionName,
         url: "http://localhost:8000",
     });
 
     return vectorStore;
 }
+
 
 function getEmbeddings() {
     return new HuggingFaceInferenceEmbeddings({

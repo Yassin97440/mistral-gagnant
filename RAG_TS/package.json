@@ -21,6 +21,6 @@
     "chromadb-default-embed": "latest",
     "langchain": "^0.3.19",
     "ts-node": "^10.9.1",
-    "typescript": "^5.0.0"
+    "typescript": "^5.8.3"
   }
 }

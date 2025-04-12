@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { tool } from "@langchain/core/tools";
-import { createChromaClient } from "../ChromaUtils";
+import { createChromaClient } from "../../data/connectors/ChromaHandler";
 
 const retrieveSchema = z.object({ query: z.string() });
 const vectorStore = createChromaClient("rag-0.1");

@@ -1,9 +1,8 @@
-import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-import { NotionClient } from "./NotionClient";
-import { createChromaClient } from "../database/ChromaHandler";
+import { NotionClient } from "../../data/connectors/NotionClient";
+import { createChromaClient  } from "../../data/connectors/ChromaHandler";
 import type { Chroma } from "@langchain/community/vectorstores/chroma";
-import { NOTION_API_KEY, NOTION_DATABASE_ID } from "../varEnv";
-import { CustomJsonSplitter } from "./CustomJsonSplitter";
+import { CustomJsonSplitter } from "../splitter/CustomJsonSplitter";
+import { NOTION_API_KEY, NOTION_DATABASE_ID } from "../../../../RAG_TS/varEnv";
 
 export class DocumentHandler {
     private BATCH_SIZE = 50;
@@ -14,7 +13,7 @@ export class DocumentHandler {
     constructor(
         chunkSize: number,
         chunkOverlap: number) {
-        this.chromaClient = createChromaClient();
+        this.chromaClient = createChromaClient("rag-0.1");
         this.chunkSize = chunkSize;
         this.chunkOverlap = chunkOverlap;
 

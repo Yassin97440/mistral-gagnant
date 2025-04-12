@@ -9,11 +9,8 @@ import type { HuggingFaceInferenceEmbeddings } from "@langchain/community/embedd
 import type { ChatMistralAI } from "@langchain/mistralai";
 import MistralClient from "./MistralClient";
 
-import { v4 as uuidv4 } from "uuid";
-
-import DocumentRetriever from "../RAG/documents/Retriever";
-import { getNewMemoryConfig } from "../memory/MemoryUtils";
-import { compile } from "../RAG/Pipeline";
+import { getNewMemoryConfig } from "../../../core/src/utils/memory/MemoryUtils";
+import { compile } from "../../../core/src/workflow/Pipeline"; 
 import type { BaseMessage } from "@langchain/core/messages";
 import { isAIMessage } from "@langchain/core/messages";
 import type { AIMessage } from "@langchain/core/messages";
@@ -24,7 +21,6 @@ export class Main {
     private promptTemplate!: ChatPromptTemplate;
     private llm: ChatMistralAI
     private emdeddingsFunction: HuggingFaceInferenceEmbeddings
-    private documentRetriever: DocumentRetriever
     private config = getNewMemoryConfig();
     private graph = compile()
     constructor() {
@@ -33,7 +29,6 @@ export class Main {
         this.getPromptTemplate()
         this.llm = new MistralClient().client
         this.emdeddingsFunction = getEmbeddings();
-        this.documentRetriever = new DocumentRetriever();
     }
     public async askQuestion(conversation: ChatMessage[]) {
 

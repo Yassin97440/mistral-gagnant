@@ -7,9 +7,8 @@ import {
 import { MemorySaver, MessagesAnnotation, StateGraph } from "@langchain/langgraph";
 import { ToolNode, toolsCondition } from "@langchain/langgraph/prebuilt";
 
-import retrieve from "./tool/Retriver";
-import MistralClient from "../Chat/MistralClient";
-import { getNewMemoryConfig } from "../memory/MemoryUtils";
+import retrieve from "../tools/vectoreStore/Retriever";
+import { MistralClient } from "../LLM/MistralClient";
 
 const llm = new MistralClient().client;
 const tools = new ToolNode([retrieve]);

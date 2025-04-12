@@ -1,7 +1,7 @@
 import { Client } from '@notionhq/client';
 import { GetPageResponse, QueryDatabaseResponse } from '@notionhq/client/build/src/api-endpoints';
-import { BlockData } from './DocumentHandler';
-import { NotionPageUtils } from './notionContent/NotionPageUtils';
+import { BlockData } from '../../processing/documents/DocumentHandler';
+import { NotionPageUtils } from '../../utils/notionContent/NotionPageUtils';
 
 interface NotionPageData {
     id: string,
