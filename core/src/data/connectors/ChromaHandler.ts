@@ -1,6 +1,6 @@
 import { Chroma } from "@langchain/community/vectorstores/chroma";
 import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
-import { HUGGING_FACE_API_KEY } from "../../../../RAG_TS/varEnv";
+
 
 
 
@@ -18,7 +18,7 @@ export function createChromaClient(collectionName: string) {
 
 function getEmbeddings() {
     return new HuggingFaceInferenceEmbeddings({
-        apiKey: HUGGING_FACE_API_KEY,
+        apiKey: process.env.HUGGING_FACE_API_KEY,
         model: "sentence-transformers/all-MiniLM-L6-v2",
     });
 }

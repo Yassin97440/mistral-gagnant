@@ -17,9 +17,9 @@ interface NotionPageData {
 export class NotionClient {
     private client: Client;
 
-    constructor(apiKey: string) {
+    constructor() {
         this.client = new Client({
-            auth: apiKey,
+            auth: process.env.NOTION_API_KEY,
         });
     }
 

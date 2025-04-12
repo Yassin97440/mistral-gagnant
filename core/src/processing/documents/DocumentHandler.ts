@@ -2,7 +2,6 @@ import { NotionClient } from "../../data/connectors/NotionClient";
 import { createChromaClient  } from "../../data/connectors/ChromaHandler";
 import type { Chroma } from "@langchain/community/vectorstores/chroma";
 import { CustomJsonSplitter } from "../splitter/CustomJsonSplitter";
-import { NOTION_API_KEY, NOTION_DATABASE_ID } from "../../../../RAG_TS/varEnv";
 
 export class DocumentHandler {
     private BATCH_SIZE = 50;
@@ -52,7 +51,7 @@ export class DocumentHandler {
 
     async getAllDocumentsFromNotionDb(): Promise<BlockData[]> {
         const notionClient = this.getNotionClient();
-        const pages = await notionClient.getPagesDataFromDatabase(NOTION_DATABASE_ID);
+        const pages = await notionClient.getPagesDataFromDatabase(process.env.NOTION_DATABASE_ID || "");
 
         let allDocumentsContents: BlockData[] = [];
         for (let i = 0; i < pages.length; i++) {
@@ -65,7 +64,7 @@ export class DocumentHandler {
     }
 
     private getNotionClient() {
-        return new NotionClient(NOTION_API_KEY);
+        return new NotionClient();
     }
 
 
