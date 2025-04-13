@@ -11,3 +11,5 @@ process.env.LANGSMITH_API_KEY = process.env.LANGSMITH_API_KEY || 'test_key';
 process.env.LANGSMITH_TRACING = process.env.LANGSMITH_TRACING || 'test_key'; 
 process.env.NOTION_API_KEY = process.env.NOTION_API_KEY || 'test_key'; 
 process.env.NOTION_DATABASE_ID = process.env.NOTION_DATABASE_ID || 'test_key'; 
+process.env.SUPABASE_URL = process.env.SUPABASE_URL || 'test_key'; 
+process.env.SUPABASE_PRIVATE_KEY = process.env.SUPABASE_PRIVATE_KEY || 'test_key'; 
