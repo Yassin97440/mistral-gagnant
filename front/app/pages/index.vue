@@ -19,7 +19,7 @@
       </div>
     </div>
     <div v-else class="chat-container">
-      <div class="messages-container">
+      <div class="conversations-container">
         <ChatMessages />
       </div>
       <div class="input-container w-full">
@@ -65,9 +65,10 @@ const activeChatId = computed(() => {
   overflow: hidden;
 }
 
-.messages-container {
+.conversations-container {
   flex: 1;
-  overflow-y: auto;
+  overflow: hidden;
+  position: relative;
   padding-bottom: 16px;
 }
 
