@@ -1,2 +1,2 @@
 export * from './connectors/NotionClient';
-export * from './connectors/ChromaAdapter';
+export * from './connectors/SupabaseVectoreStore';
