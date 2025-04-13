@@ -1,15 +1,13 @@
 import { z } from "zod";
 import { tool } from "@langchain/core/tools";
-import { ChromaAdapter } from "../../data/connectors/ChromaAdapter";
-import { getEmbeddings } from "../../processing/embedding/HFSentence-transformers";
+import { VectorStore } from "@langchain/core/vectorstores";
+import { getSupabaseVectorStore } from "../../data/connectors/SupabaseVectoreStore";
 
 const retrieveSchema = z.object({ query: z.string() });
-let vectorStore: ChromaAdapter;
+let vectorStore: VectorStore;
 
 const initVectorStore = async () => {
-  vectorStore = await ChromaAdapter.fromExistingCollection(getEmbeddings(), {
-    collectionName: "rag-0.1",
-  });
+  vectorStore = getSupabaseVectorStore("documents", "documents");
 };
 
 void initVectorStore();

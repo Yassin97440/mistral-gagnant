@@ -5,6 +5,9 @@ import { EmbeddingsInterface } from "@langchain/core/embeddings";
 import { ChromaLibArgs, ChromaDeleteParams } from "@langchain/community/vectorstores/chroma";
 import { v1 as uuidv1, v4 as uuidv4 } from "uuid";
 
+/**
+ * @deprecated Use SupabaseVectorStore instead
+ */
 export class ChromaAdapter extends VectorStore {
   declare FilterType: Where;
 
