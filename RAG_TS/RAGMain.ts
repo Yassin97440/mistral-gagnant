@@ -1,4 +1,4 @@
-import { DocumentHandler } from '@yassin97440/mistral-gagnant';
+import { DocumentHandler } from '@yassin97440/mistral-gagnant/dist/processing/documents/DocumentHandler.js';
 import dotenv from 'dotenv';
 
 class RAGMain {
