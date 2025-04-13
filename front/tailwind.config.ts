@@ -13,12 +13,11 @@ export default <Config>{
     extend: {
       colors: {
         // Couleurs principales
-        primary: '#1976D2',
-        secondary: '#14532d',
-        // Couleurs pour les messages
-        'user-bg': '#EBF5FF',
-        'assistant-bg': '#F5FFF9',
-        'interface-bg': '#FFFFFF'
+        primary: '#00DC82',
+        secondary: '#284237',
+        'user-bg': '#279C6B',
+        'assistant-bg': '#2E5C49',
+        'interface-bg': '#020618'
       },
       borderRadius: {
         'message': '12px'

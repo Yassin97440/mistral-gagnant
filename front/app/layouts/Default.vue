@@ -1,40 +1,78 @@
 <template>
-  <v-app>
-    <v-navigation-drawer v-model="drawer" permanent location="left" width="300" class="bg-interface-bg">
-      <v-list-item prepend-avatar="https://randomuser.me/api/portraits/men/78.jpg" title="Mon espace de chat">
-      </v-list-item>
+  <v-app bg-color="interface-bg">
+    <v-app-bar flat color="transparent" class="glass-panel px-4">
+      <div class="d-flex align-center">
+        <div class="logo-container me-3">
+          <svg width="32" height="32" viewBox="0 0 32 32" class="reactive-logo">
+            <circle cx="16" cy="16" r="14" fill="transparent" stroke="rgba(var(--v-theme-primary), 0.3)"
+              stroke-width="1" />
+            <circle cx="16" cy="16" r="10" fill="transparent" stroke="rgba(var(--v-theme-primary), 0.5)"
+              stroke-width="1" />
+            <circle cx="16" cy="16" r="6" fill="rgb(var(--v-theme-primary))" class="pulse" />
+            <path d="M12 16 L16 16 L20 16" stroke="white" stroke-width="2" />
+            <path d="M16 12 L16 20" stroke="white" stroke-width="2" />
+          </svg>
+        </div>
+        <h1 class="text-h6 font-weight-medium tech-text">Mistral Gagnant</h1>
+      </div>
 
-      <v-divider></v-divider>
+      <v-spacer></v-spacer>
 
-      <v-btn block color="primary" class="ma-2 text-white font-medium" prepend-icon="mdi-plus"
-        @click="chatStore.createNewChat">
-        Nouvelle conversation
+      <div class="status-indicator me-3">
+        <span class="status-dot"></span>
+        <span text-primary class="text-caption text-primary/50">Online</span>
+      </div>
+
+      <v-btn icon variant="text" class="mx-1 glow-hover text-primary">
+        <v-icon>mdi-theme-light-dark</v-icon>
       </v-btn>
-
-      <v-btn block color="secondary" class="ma-2 text-white font-medium" prepend-icon="mdi-plus"
-        @click="callTestChroma">
-        TEST CHROMA DB
+      <v-btn icon variant="text" class="mx-1 glow-hover text-primary">
+        <v-icon>mdi-cog</v-icon>
       </v-btn>
-
-      <v-list nav>
-        <v-list-item v-if="activeChat" v-for="(chat, index) in chatStore.chats" :key="index" :value="index"
-          :title="chat.title" :prepend-icon="activeChat?.id === chat.id ? 'mdi-chat' : 'mdi-chat-outline'
-            " @click="chatStore.selectChat(chat.id)" :active="activeChat?.id === chat.id"
-          :class="{ 'active-chat': activeChat?.id === chat.id, 'rounded-message': true }">
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-
-    <v-app-bar color="primary" density="compact" class="text-white">
-      <template v-slot:prepend>
-        <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      </template>
-
-      <v-app-bar-title>Mistral Gagnant</v-app-bar-title>
     </v-app-bar>
 
-    <v-main>
-      <slot></slot>
+    <v-main class="bg-interface-bg max-h-screen">
+      <v-container fluid class="fill-height pa-0">
+        <v-row no-gutters class="fill-height">
+          <v-col cols="12" sm="3" md="2" lg="2" class="side-navigation tech-panel">
+            <div class="pa-4">
+              <v-btn block color="primary" prepend-icon="mdi-plus" class="mb-4 flex justify-center tech-button "
+                @click="chatStore.createNewChat()">
+
+                <span class="">Nouveau chat</span>
+              </v-btn>
+
+
+              <div class="tech-section-header mt-2 mb-3">
+                <div class="tech-line"></div>
+                <txt class="text-caption   text-primary mx-2 ">CONVERSATIONS</txt>
+                <div class="tech-line"></div>
+              </div>
+              <div class="chat-list">
+                <v-list density="compact" bg-color="transparent">
+                  <v-list-item v-for="conv in chatStore.chats" :key="conv.id" :title="`${conv.title}`"
+                    prepend-icon="mdi-chat-outline" active-color="primary" class="mb-1 tech-list-item"></v-list-item>
+                </v-list>
+              </div>
+            </div>
+            <v-divider class="border-opacity-10"></v-divider>
+            <div class="pa-4 app-info">
+              <div class="d-flex align-center">
+                <div class="core-dot me-2"></div>
+                <span class="text-caption text-primary">CORE v1.0.0</span>
+              </div>
+              <v-btn variant="text" density="compact" class="tech-text-button" size="small"
+                href="https://github.com/votre-repo" target="_blank">
+                <v-icon size="small" class="me-1">mdi-github</v-icon> GitHub
+              </v-btn>
+            </div>
+          </v-col>
+          <v-col cols="12" sm="9" md="10" lg="10" class="main-content pa-0">
+            <div class="tech-border"></div>
+            <slot />
+          </v-col>
+        </v-row>
+      </v-container>
     </v-main>
   </v-app>
 </template>
@@ -65,7 +103,169 @@ const activeChat = computed(() => {
 </script>
 
 <style scoped>
-.active-chat {
-  background-color: rgba(var(--v-theme-primary), 0.1);
+.bg-interface-bg {
+  background-color: rgb(var(--v-theme-interface-bg));
+  background-image:
+    radial-gradient(circle at 15% 50%, rgba(var(--v-theme-primary), 0.03) 0%, transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(var(--v-theme-primary), 0.02) 0%, transparent 25%);
+}
+
+.glass-panel {
+  backdrop-filter: blur(10px);
+  background: rgba(var(--v-theme-interface-bg), 0.7);
+  border-bottom: 1px solid rgba(var(--v-theme-primary), 0.1);
+  position: static;
+  top: 0;
+  z-index: 10;
+}
+
+.tech-panel {
+  background: rgba(var(--v-theme-interface-bg), 0.9);
+  border-right: 1px solid rgba(var(--v-theme-primary), 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  position: sticky;
+  overflow: hidden;
+}
+
+.tech-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(to bottom, transparent, rgba(var(--v-theme-primary), 0.2) 50%, transparent);
+}
+
+.text-button {
+  border-radius: 4px;
+  font-size: 0.75rem;
+  /* ⬅️ réduit la taille du texte */
+  line-height: 1.2;
+  white-space: normal;
+  /* permet les retours à la ligne */
+  text-align: left;
+}
+
+.tech-button {
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(var(--v-theme-primary), 0.3);
+  transition: all 0.5s ease;
+
+
+}
+
+.tech-button:hover {
+  box-shadow: 0 0 15px rgba(var(--v-theme-primary), 0.5);
+}
+
+.tech-list-item {
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.tech-list-item:hover {
+  background-color: rgba(var(--v-theme-primary), 0.05) !important;
+}
+
+.app-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.main-content {
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.tech-border {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(var(--v-theme-primary), 0.1), transparent);
+}
+
+.chat-list {
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+.tech-section-header {
+  display: flex;
+  align-items: center;
+}
+
+.tech-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.tech-text {
+  letter-spacing: 0.5px;
+  position: relative;
+  color: rgb(var(--v-theme-primary));
+}
+
+.core-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgb(var(--v-theme-primary));
+  box-shadow: 0 0 10px rgba(var(--v-theme-primary), 0.5);
+  animation: pulse 2s infinite;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgb(var(--v-theme-primary));
+  box-shadow: 0 0 10px rgba(var(--v-theme-primary), 0.5);
+  animation: pulse 2s infinite;
+}
+
+.reactive-logo {
+  filter: drop-shadow(0 0 3px rgba(var(--v-theme-primary), 0.5));
+}
+
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+.glow-hover:hover {
+  filter: drop-shadow(0 0 2px rgba(var(--v-theme-primary), 0.7));
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.7;
+    filter: drop-shadow(0 0 2px rgba(var(--v-theme-primary), 0.5));
+  }
+
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 5px rgba(var(--v-theme-primary), 0.8));
+  }
+
+  100% {
+    opacity: 0.7;
+    filter: drop-shadow(0 0 2px rgba(var(--v-theme-primary), 0.5));
+  }
 }
 </style>
