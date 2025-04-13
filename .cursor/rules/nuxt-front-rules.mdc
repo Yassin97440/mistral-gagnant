@@ -1,0 +1,87 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Guide de développement front-end (Nuxt3 + Vuetify + Tailwind + Cursor)
+
+> Ce document sert de référence pour le développement front-end assisté par Cursor AI. Il formalise les bonnes pratiques que l'agent doit suivre pour générer du code cohérent avec l'architecture et la philosophie du projet.
+
+---
+
+## Couleurs & Thèmes
+
+- Utiliser **exclusivement le système de theming** :
+  - Classes Vuetify : `bg-primary`, `text-secondary`, etc.
+  - Couleurs définies dans `tailwind.config.js`.
+- Éviter les couleurs brutes (`bg-red-500`, `#ff0000`, `rgb()`) sauf cas exceptionnel ou prototypage rapide.
+- Favoriser la **cohérence avec la palette et le rôle fonctionnel** de la couleur utilisée.
+
+---
+
+## Spacing & Layout
+
+- Toujours utiliser les **classes utilitaires Tailwind** :
+  - Espacement (`p-4`, `m-2`, `gap-x-6`, etc.)
+  - Flexbox, grid, responsive (`flex`, `grid`, `sm:`, `md:`, etc.)
+- Les styles inline (`style="padding:..."`) sont **autorisés uniquement en dernier recours**.
+- Aucune grille système imposée, mais respecter les besoins spécifiques du contexte.
+- Avant d’ajouter une règle CSS, **vérifier la structure parent/enfant du composant** pour placer la règle au niveau le plus pertinent.
+
+---
+
+## Structure & Atomic Design
+
+- Respect strict de l’approche **Atomic Design** :
+  - `atoms/` → éléments UI simples (ex: `BaseButton.vue`)
+  - `molecules/` → combinaisons d’atoms (ex: `FormField.vue`)
+  - `organisms/` → blocs fonctionnels structurants (ex: `SearchResults.vue`)
+- Ne pas utiliser les niveaux `templates/` et `pages/` dans la structure des composants (gérés par Nuxt).
+
+---
+
+## Organisation & Nommage
+
+- Tous les composants doivent être placés dans `/app/components`.
+- Organiser les composants dans des **sous-dossiers par domaine métier**.
+  - Exemple : `/app/components/user/UserProfileCard.vue`
+- Les composants utilitaires non métiers vont dans `/app/components/common/`.
+- Utiliser **PascalCase** pour nommer les fichiers `.vue`.
+- Forcer le découpage dès qu’un composant :
+  - Contient de la logique métier
+  - Affiche plusieurs éléments composites
+  - A une structure visuelle riche ou réutilisable
+
+---
+
+## Intégration Nuxt3
+
+- Utiliser la **Composition API avec `<script setup>`** par défaut.
+- Utiliser les fonctions utilitaires Nuxt dès que nécessaire :
+  - `useRoute()`, `useHead()`, `useAsyncData()`, etc.
+- Créer des **composables (`useXxx`)** pour isoler toute logique réutilisable.
+
+---
+
+## Tests & Accessibilité
+
+- Toujours intégrer les bonnes pratiques d’accessibilité :
+  - `aria-label`, `alt`, `role`, etc.
+- Préparer chaque composant pour les tests :
+  - Props claires et typées
+  - Ajout de `data-testid` sur les éléments dynamiques ou interactifs
+  - Comportements bien isolés (testabilité unitaire facilitée)
+
+---
+
+##  Cursor AI – Agent frontend
+
+> Quand Cursor est utilisé comme copilote :
+
+- Toujours suivre les règles ci-dessus par défaut.
+- Préférer la **génération de composants bien structurés, typés et découpés**.
+- Générer des composants isolables, réutilisables et testables.
+- Respecter la cohérence thématique et l'organisation par domaine métier.
+
+---
+
