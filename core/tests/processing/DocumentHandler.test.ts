@@ -1,11 +1,10 @@
 import { DocumentHandler, BlockData } from '../../src/processing/documents/DocumentHandler';
 import { NotionClient } from '../../src/data/connectors/NotionClient';
-import { getSupabaseVectorStore } from '../../src/data/connectors/SupabaseVectoreStore';
 import { jest, describe, beforeEach, it, expect } from '@jest/globals';
 
 // Mock des dépendances
 jest.mock('../../src/data/connectors/NotionClient');
-jest.mock('../../src/data/connectors/SupabaseVectoreStore', () => ({
+jest.mock('../../src/data/connectors/SupabaseVectorStore', () => ({
   getSupabaseVectorStore: jest.fn().mockImplementation(() => ({
     addDocuments: jest.fn().mockResolvedValue(undefined as never)
   }))

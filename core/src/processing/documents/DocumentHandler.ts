@@ -1,5 +1,5 @@
 import { NotionClient } from "../../data/connectors/NotionClient";
-import { getSupabaseVectorStore } from "../../data/connectors/SupabaseVectoreStore";
+import { getSupabaseVectorStore } from "../../data/connectors/SupabaseVectorStore";
 import { CustomJsonSplitter, DocumentChunk } from "../splitter/CustomJsonSplitter";
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
 export class DocumentHandler {
@@ -11,7 +11,7 @@ export class DocumentHandler {
     constructor(
         chunkSize: number,
         chunkOverlap: number) {
-        this.vectoreStore = getSupabaseVectorStore("documents", "match_documents")
+        this.vectoreStore = getSupabaseVectorStore("documents", "store_embedded_documents")
         this.chunkSize = chunkSize;
         this.chunkOverlap = chunkOverlap;
 
@@ -41,8 +41,7 @@ export class DocumentHandler {
             const splits = await this.splitDocument(doc);
             const chunksWithMetadata = this.addMetadataToChunk(splits, doc);
 
-            const chunkIds = splits.map((_, index) => `${doc.id}-chunk-${index}`);
-
+            const chunkIds = splits.map((_, index) => `${BigInt(Date.now() + index)}`);
             await this.vectoreStore.addDocuments(chunksWithMetadata, { ids: chunkIds });
 
             totalChunksAddedToDb += 1;

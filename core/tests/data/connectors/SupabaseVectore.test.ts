@@ -3,7 +3,7 @@ import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { getEmbeddings } from "../../../src/processing";
 import { jest, describe, it, expect, beforeEach } from '@jest/globals';
 import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
-import { getSupabaseVectorStore } from "../../../src/data/connectors/SupabaseVectoreStore";
+import { getSupabaseVectorStore } from "../../../src/data/connectors/SupabaseVectorStore";
 // Mock des dépendances
 jest.mock("@langchain/community/vectorstores/supabase");
 jest.mock("@supabase/supabase-js");
@@ -29,7 +29,7 @@ describe('SupabaseVectore', () => {
     // Importer le module après avoir configuré les mocks et l'environnement
     jest.isolateModules(() => {
       // Cette importation déclenche l'exécution du code dans le module
-      require('../../../src/data/connectors/SupabaseVectoreStore');
+      require('../../../src/data/connectors/SupabaseVectorStore');
       console.log("mockSupabaseClient", getSupabaseVectorStore("documents", "match_documents").client);
       // Vérifier que createClient a été appelé avec les bonnes valeurs
       expect(createClient).toHaveBeenCalledWith(

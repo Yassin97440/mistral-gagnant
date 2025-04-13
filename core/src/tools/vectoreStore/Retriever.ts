@@ -1,20 +1,20 @@
 import { z } from "zod";
 import { tool } from "@langchain/core/tools";
-import { VectorStore } from "@langchain/core/vectorstores";
-import { getSupabaseVectorStore } from "../../data/connectors/SupabaseVectoreStore";
+import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
+import { getSupabaseVectorStore } from "../../data/connectors/SupabaseVectorStore";
 
 const retrieveSchema = z.object({ query: z.string() });
-let vectorStore: VectorStore;
+let vectorStore: SupabaseVectorStore;
 
 const initVectorStore = async () => {
-  vectorStore = getSupabaseVectorStore("documents", "documents");
+  vectorStore = getSupabaseVectorStore("documents", "match_documents");
 };
 
 void initVectorStore();
 
 const retrieve = tool(
   async ({ query }) => {
-    const retrievedDocs = await vectorStore.similaritySearch(query, 2);
+    const retrievedDocs = await vectorStore.similaritySearch(query.toString(), 2);
 
     const serialized = retrievedDocs
       .map(
