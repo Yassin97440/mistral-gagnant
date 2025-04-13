@@ -54,9 +54,8 @@ const filteredMessages = computed(() => {
 
 <style scoped>
 .messages-container {
-  height: calc(100vh - 150px);
+  height: 100%;
   overflow-y: auto;
-  padding-bottom: 20px;
   width: 100%;
 }
 
