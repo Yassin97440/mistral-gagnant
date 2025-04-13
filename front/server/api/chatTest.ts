@@ -1,10 +1,15 @@
 import { Main } from "~~/services/Chat/Main"
+import { DocumentHandler } from "@yassin97440/mistral-gagnant"
 const main = new Main()
 
 export default defineEventHandler(async (event) => {
+    const docHandler = new DocumentHandler(1000,200);
+    await docHandler.processAllDocumentsWithPagination();
+    console.log("Documents processed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
     const chatBotMessages: [] = await readBody(event)
     const results = await main.askQuestion(chatBotMessages)
+
 
     return results
 

@@ -1,9 +1,9 @@
-export * from './data';
-export * from './processing';
-export * from './tools';
+export * from './data/index';
+export * from './processing/index';
+export * from './tools/index';
 // export * from './agents';
 // export * from './workflow';
-export * from './utils';
+export * from './utils/index';
 
 export const maFonction = () => {
   return "Hello from core module!";

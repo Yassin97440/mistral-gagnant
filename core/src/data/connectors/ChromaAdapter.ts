@@ -55,7 +55,8 @@ export class ChromaAdapter extends VectorStore {
   async addDocuments(
     documents: Array<{ pageContent: string; metadata: Record<string, any> }>,
     options?: { ids?: string[] }
-  ): Promise<void> {
+  ): Promise<void>
+  {
     const texts = documents.map(({ pageContent }) => pageContent);
     await this.collection?.add(
       {
@@ -85,7 +86,9 @@ export class ChromaAdapter extends VectorStore {
           this.collection = await this.index.getCollection({
             name: this.collectionName,
             embeddingFunction: {
-              generate: (texts: string[]) => this.embeddings.embedDocuments(texts)
+              generate: async (texts: string[]) => {
+                return await this.embeddings.embedDocuments(texts);
+              }
             }
           });
         } catch (error) {

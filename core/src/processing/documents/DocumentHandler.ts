@@ -1,20 +1,17 @@
 import { NotionClient } from "../../data/connectors/NotionClient";
-import { CustomJsonSplitter } from "../splitter/CustomJsonSplitter";
-import { ChromaAdapter } from "../../data/connectors/ChromaAdapter";
-import { getEmbeddings } from "../embedding/HFSentence-transformers";
+import { getSupabaseVectorStore } from "../../data/connectors/SupabaseVectoreStore";
+import { CustomJsonSplitter, DocumentChunk } from "../splitter/CustomJsonSplitter";
+import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
 export class DocumentHandler {
     private BATCH_SIZE = 50;
-    private chromaClient: ChromaAdapter;
+    private vectoreStore: SupabaseVectorStore;
     private chunkSize: number
     private chunkOverlap: number
 
     constructor(
         chunkSize: number,
         chunkOverlap: number) {
-        this.chromaClient = new ChromaAdapter(getEmbeddings(), {
-            collectionName: "rag-0.1",
-            url: "http://localhost:8000/",
-        });
+        this.vectoreStore = getSupabaseVectorStore("documents", "match_documents")
         this.chunkSize = chunkSize;
         this.chunkOverlap = chunkOverlap;
 
@@ -39,14 +36,17 @@ export class DocumentHandler {
         let totalChunksAddedToDb = 0;
         for (const doc of documents) {
             // console.log("🚀 ~ DocumentHandler ~ processDocumentsBatch ~ doc:", doc)
-            if (!doc.content || doc.content.length == 0 || doc.content === 'undefined')
+            if (!doc.content || doc.content.length == 0 || doc.content.trim() === 'undefined')
                 continue;
             const splits = await this.splitDocument(doc);
-            // Créer des IDs uniques pour chaque chunk
+            const chunksWithMetadata = this.addMetadataToChunk(splits, doc);
+
             const chunkIds = splits.map((_, index) => `${doc.id}-chunk-${index}`);
-            await this.chromaClient.addDocuments(splits);
+
+            await this.vectoreStore.addDocuments(chunksWithMetadata, { ids: chunkIds });
+
             totalChunksAddedToDb += 1;
-            console.warn("CHUNCKED ADDED IN CHROMA ");
+            console.warn("CHUNCKED ADDED IN SUPABASE ");
         }
         console.log("🚀 ~ DocumentHandler ~ processDocumentsBatch ~ totalChunksAddedToDb for chunck:", totalChunksAddedToDb)
     }
@@ -79,6 +79,14 @@ export class DocumentHandler {
 
 
         // Ensuite, enrichir chaque chunk avec des métadonnées spécifiques
+        return jsonChunks;
+    }
+
+
+
+
+
+    private addMetadataToChunk(jsonChunks: DocumentChunk[], doc: BlockData) : DocumentChunk[] {
         return jsonChunks.map((split, index) => {
             split.metadata = {
                 "create_date": doc.createdAt,
@@ -94,17 +102,12 @@ export class DocumentHandler {
                 // Information sur le contenu du chunk
                 "chunk_summary": `Partie ${index + 1}/${jsonChunks.length} de ${doc.title}`,
                 "chunk_position": index === 0 ? "début" : index === jsonChunks.length - 1 ? "fin" : "milieu",
-
                 // chunk_keywords: extractKeywords(split.pageContent)
             };
-            console.log("🚀 ~ DocumentHandler ~ returnjsonChunks.map ~ split:", split)
+            console.log("🚀 ~ DocumentHandler ~ returnjsonChunks.map ~ split:", split);
             return split;
         });
     }
-
-
-
-
 }
 
 export interface BlockData {
