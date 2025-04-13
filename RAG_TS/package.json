@@ -6,8 +6,8 @@
   "dependencies": {
     "@langchain/community": "^0.3.37",
     "@langchain/mistralai": "^0.2.0",
-    "@mistral-gagnant/core": "file:../core",
     "@notionhq/client": "^2.3.0",
+    "@yassin97440/mistral-gagnant": "^0.0.2",
     "cheerio": "^1.0.0",
     "dotenv": "^16.4.7"
   },

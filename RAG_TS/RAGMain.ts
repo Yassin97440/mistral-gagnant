@@ -1,4 +1,4 @@
-import { DocumentHandler } from "@mistral-gagnant/core/dist/processing/documents/DocumentHandler";
+import { DocumentHandler } from '@yassin97440/mistral-gagnant';
 import dotenv from 'dotenv';
 
 class RAGMain {

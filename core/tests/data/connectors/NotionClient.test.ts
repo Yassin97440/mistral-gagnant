@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { NotionClient } from '../../../src/data/connectors/NotionClient';
 import { Client } from '@notionhq/client';
 
@@ -20,7 +21,7 @@ describe('NotionClient', () => {
             { id: 'page1' },
             { id: 'page2' }
           ]
-        })
+        } as never)
       }
     };
     
