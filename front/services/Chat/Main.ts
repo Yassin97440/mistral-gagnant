@@ -2,11 +2,10 @@
 import { Annotation, type Messages } from "@langchain/langgraph";
 import type { Document } from "langchain/document";
 
-import { getNewMemoryConfig } from "../../../core/src/utils/memory/MemoryUtils";
-import { compile } from "../../../core/src/workflow/Pipeline"; 
 import type { BaseMessage } from "@langchain/core/messages";
 import { isAIMessage } from "@langchain/core/messages";
 import type { AIMessage } from "@langchain/core/messages";
+import { compile, getNewMemoryConfig } from "@yassin97440/mistral-gagnant";
 
 
 export class Main {
