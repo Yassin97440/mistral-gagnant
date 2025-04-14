@@ -26,10 +26,6 @@
         CHAT
       </v-btn>
 
-      <div class="status-indicator me-3">
-        <span class="status-dot"></span>
-        <span text-primary class="text-caption text-primary/50">Online</span>
-      </div>
 
       <v-btn icon variant="text" class="mx-1 glow-hover text-primary">
         <v-icon>mdi-theme-light-dark</v-icon>
@@ -39,13 +35,19 @@
       </v-btn>
     </v-app-bar>
 
+    <v-navigation-drawer  location="left" class="side-navigation rag-panel text-primary">
+      <v-list-item prepend-icon="mdi-key" title="Mes clés API" to="/AccessConfig"></v-list-item>
+      <v-list-item prepend-icon="mdi-database-settings" title="RAG" to="/RAG"></v-list-item>
+    </v-navigation-drawer>
+
     <v-main class="bg-interface-bg max-h-screen">
       <v-container fluid class="fill-height pa-0">
         <v-row no-gutters class="fill-height">
-          <!-- Navbar latérale spécifique à RAG -->
-          <v-col cols="12" sm="3" md="2" lg="2" class="side-navigation rag-panel">
-            <div class="pa-4">
-              <v-btn block color="accent" prepend-icon="mdi-key" class="mb-4 flex justify-center rag-nav-button">
+
+            <!-- Navbar latérale spécifique à RAG -->
+            <!-- <v-col cols="12" sm="3" md="2" lg="2" class="side-navigation rag-panel">
+              <div class="pa-4">
+              <v-btn block  prepend-icon="mdi-key" :to="'/AccessConfig'" class="mb-4 flex justify-center rag-nav-button bg-primary">
                 <span>Mes accès API</span>
               </v-btn>
 
@@ -69,12 +71,12 @@
               </v-btn>
             </div>
           </v-col>
-          
+           -->
           <!-- Contenu principal -->
-          <v-col cols="12" sm="9" md="10" lg="10" class="main-content pa-0">
+          <div cols="12" sm="9" md="10" lg="10" class="main-content pa-0">
             <div class="rag-border"></div>
             <slot />
-          </v-col>
+          </div>
         </v-row>
       </v-container>
     </v-main>
@@ -83,7 +85,8 @@
 
 <script setup lang="ts">
 
-const drawer = ref(true);
+
+
 </script>
 
 <style scoped>
@@ -125,7 +128,7 @@ const drawer = ref(true);
 }
 
 .rag-nav-button {
-  border-radius: 4px;
+  border-radius: 5px;
   box-shadow: 0 0 10px rgba(var(--v-theme-accent), 0.3);
   transition: all 0.5s ease;
 }
