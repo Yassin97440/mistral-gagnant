@@ -1,30 +1,53 @@
 <template>
     <div class="rag-container">
         <h1>RAG</h1>
-        
+
         <div class="action-section">
-            <button 
-                @click="processDocuments" 
-                class="futuristic-button"
-                :disabled="ragStore.isProcessing"
-            >
+            <button @click="processDocuments" class="futuristic-button" :disabled="ragStore.isProcessing">
                 <span class="button-content">
                     <span v-if="!ragStore.isProcessing">Traiter les documents</span>
                     <span v-else class="loading-spinner"></span>
                 </span>
             </button>
         </div>
-        
-        <div v-if="ragStore.processingStatus" class="status-message" :class="{ 'success': ragStore.processingStatus.includes('succès'), 'error': ragStore.processingStatus.includes('Erreur') }">
+
+        <div v-if="ragStore.processingStatus" class="status-message"
+            :class="{ 'success': ragStore.processingStatus.includes('succès'), 'error': ragStore.processingStatus.includes('Erreur') }">
             {{ ragStore.processingStatus }}
         </div>
+
+        <v-divider class="text-primary"></v-divider>
+
+        <v-data-table :items="items" class="rounded-lg  border-2 border-opacity-60 border-primary text-primary" :headers="headers" hover>
+            <template v-slot:item.status="{ item }" >
+                <v-icon :icon="item.status === 'success' ? 'mdi-check-circle-outline' : 'mdi-alert-circle-outline'"></v-icon>
+                <span class="text-primary">{{ item.status }}</span>
+
+            </template>
+        </v-data-table>
+      
     </div>
 </template>
 
 <script setup lang="ts">
 import { useRAGStore } from "~/stores/RAGStore";
 
+definePageMeta({
+    layout: 'rag'
+});
+
 const ragStore = useRAGStore();
+
+const items = computed(() => {
+    return ragStore.processingHistorics;
+});
+
+
+const headers = ref([
+    { title: 'Titre', key: 'title' },
+    { title: 'Statut', key: 'status' },
+    { title: 'Base Notion', key: 'NotionDatabase' }
+]);
 
 const processDocuments = async () => {
     try {
@@ -37,6 +60,7 @@ const processDocuments = async () => {
 
 <style scoped>
 .rag-container {
+    height: 100%;
     padding: 2rem;
     display: flex;
     flex-direction: column;
@@ -137,11 +161,56 @@ const processDocuments = async () => {
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.rag-nav-list {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+
+.rag-list-item {
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.rag-list-item:hover {
+    background-color: rgba(var(--v-theme-accent), 0.05) !important;
+}
+
+.rag-list-item.active {
+    background-color: rgba(var(--v-theme-accent), 0.1) !important;
+    border-left: 2px solid rgb(var(--v-theme-accent));
+}
+
+.rag-list-item.active:hover {
+    background-color: rgba(var(--v-theme-accent), 0.15) !important;
+    box-shadow: 0 0 10px rgba(var(--v-theme-accent), 0.2);
+}
+
+:deep(.v-data-table) {
+    background-color: rgba(var(--v-theme-secondary), 0.23);
+}
+
+:deep(.v-data-table-header) {
+    background-color: rgba(var(--v-theme-secondary), 0.45);
+}
+
+:deep(.v-data-table-row:hover) {
+    background-color: rgba(var(--v-theme-secondary), 0.78) !important;
 }
 </style>
