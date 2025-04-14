@@ -9,7 +9,7 @@
           </div>
         </div>
         <h2 class="text-h5 font-weight-medium mb-2 tech-gradient-text">Bienvenue dans votre laboratoire IA</h2>
-        <p text-primary class="text-body-2 text-medium-emphasis mb-6 ">
+        <p class="text-body-2 text-emphasis mb-6 ">
           Assistant personnel avec RAG intégré pour une intelligence augmentée
         </p>
         <v-btn color="primary" size="large" prepend-icon="mdi-plus" @click="chatStore.createNewChat()"
