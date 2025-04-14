@@ -65,7 +65,7 @@ async function generate(state: typeof MessagesAnnotation.State) {
     return { messages: [response] };
 }
 
-function compile() {
+export function compile() {
     const graphBuilder = new StateGraph(MessagesAnnotation)
         .addNode("queryOrRespond", queryOrRespond)
         .addNode("tools", tools)
@@ -82,4 +82,3 @@ function compile() {
     return graph
 }
 
-export { compile }
