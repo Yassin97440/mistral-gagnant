@@ -41,43 +41,26 @@
     </v-navigation-drawer>
 
     <v-main class="bg-interface-bg max-h-screen">
-      <v-container fluid class="fill-height pa-0">
-        <v-row no-gutters class="fill-height">
-
-            <!-- Navbar latérale spécifique à RAG -->
-            <!-- <v-col cols="12" sm="3" md="2" lg="2" class="side-navigation rag-panel">
-              <div class="pa-4">
-              <v-btn block  prepend-icon="mdi-key" :to="'/AccessConfig'" class="mb-4 flex justify-center rag-nav-button bg-primary">
-                <span>Mes accès API</span>
-              </v-btn>
-
-              <div class="rag-section-header mt-2 mb-3">
-                <div class="rag-line"></div>
-                <txt class="text-caption text-accent mx-2">MES RAG</txt>
-                <div class="rag-line"></div>
-              </div>
-              
-              
-            </div>
-            <v-divider class="border-opacity-10"></v-divider>
-            <div class="pa-4 app-info">
-              <div class="d-flex align-center">
-                <div class="core-dot me-2 accent-dot"></div>
-                <span class="text-caption text-accent">CORE v1.0.0</span>
-              </div>
-              <v-btn variant="text" density="compact" class="rag-text-button" size="small"
-                href="https://github.com/votre-repo" target="_blank">
-                <v-icon size="small" class="me-1">mdi-github</v-icon> GitHub
-              </v-btn>
-            </div>
-          </v-col>
-           -->
-          <!-- Contenu principal -->
-          <div cols="12" sm="9" md="10" lg="10" class="main-content pa-0">
+      <v-container fluid class=" pa-0">
+  
+        <!-- 
+        <v-divider class="border-opacity-10"></v-divider>
+        <div class="pa-4 app-info">
+          <div class="d-flex align-center">
+            <div class="core-dot me-2 accent-dot"></div>
+            <span class="text-caption text-accent">CORE v1.0.0</span>
+          </div>
+          <v-btn variant="text" density="compact" class="rag-text-button" size="small"
+            href="https://github.com/votre-repo" target="_blank">
+            <v-icon size="small" class="me-1">mdi-github</v-icon> GitHub
+          </v-btn>
+        </div>
+      </v-col>
+       -->
+          <div class="main-content pa-0">
             <div class="rag-border"></div>
             <slot />
           </div>
-        </v-row>
       </v-container>
     </v-main>
   </v-app>

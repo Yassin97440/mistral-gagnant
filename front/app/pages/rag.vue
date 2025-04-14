@@ -63,6 +63,7 @@ const processDocuments = async () => {
     height: 100%;
     padding: 2rem;
     display: flex;
+    justify-content: center;
     flex-direction: column;
     align-items: center;
     gap: 2rem;
