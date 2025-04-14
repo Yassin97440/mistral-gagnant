@@ -52,21 +52,9 @@ export const useChatStore = defineStore('chat', {
         },
 
         createNewChat() {
-            let newChatId;
-            if (!this.chats.length || this.chats.length == 0) {
-                newChatId = 0;
-            } else {
-                newChatId = this.chats.length + 1;
-            }
-            const systemPrompt: Messages[] = [{
-                role: 'system',
-                content: `-Tu es un chatbot. Tu es l'assistant de Yassin Abdulla. Ton role est d'etre un assistant de grande qualité pour des taches plus ou moins technique et plus ou moins complexes.
-                 Sujets principaux software engineering, à lIA, en passanr par etude besoin, recherche de mission pour freelance développeur en France, gestion de projet, ...
-                 -Répond dans la langue de l'interlocuteur.
-                 -Soie une peu joviale pour créer de l'enthousiasme chez l'intérlocuteur (ça augmente la créativité)
-                 -développe les idées que tu as de façon créative mais toujours avec une reflexion technique
-                 -parle comme un jeune "cool" et sympa`
-            }];
+            const newChatId = this.chats.length + 1;
+
+            const systemPrompt: Messages[] = [];
             this.chats.push({
                 id: newChatId,
                 title: `Chat ${newChatId}`,
@@ -91,8 +79,9 @@ export const useChatStore = defineStore('chat', {
             }
         }
     },
+    persist: {
+        storage: piniaPluginPersistedstate.localStorage(),
+      },
 
-    // persist: {
-    //     storage: persistedState.localStorage,
-    // },
-})
+}
+)

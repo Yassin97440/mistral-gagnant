@@ -10,7 +10,8 @@ export default defineNuxtConfig({
   modules: [
     '@pinia/nuxt',
     'vuetify-nuxt-module',
-    '@nuxtjs/tailwindcss'
+    '@nuxtjs/tailwindcss',
+    'pinia-plugin-persistedstate'
   ],
   vite: {
     vue: {
