@@ -3,15 +3,16 @@
     <v-card flat class="mx-auto bg-interface-bg">
       <v-form @submit.prevent="sendMessage">
         <v-textarea v-model="userMessage" variant="outlined" placeholder="Écrivez votre message ici..." rows="3"
-          auto-grow hide-details class="chat-textarea bg-secondary"
-          @keydown.enter.prevent="handleEnterPress"></v-textarea>
+          auto-grow hide-details class="chat-textarea bg-secondary" @keydown.enter.prevent="handleEnterPress">
 
-        <div class="d-flex justify-end align-center pa-2">
+        </v-textarea>
+        <div class="d-flex justify-end  pa-2">
           <v-btn :disabled="!userMessage.trim() || chatStore.isLoading" :loading="chatStore.isLoading" color="primary"
             @click="sendMessage" class="px-4" prepend-icon="mdi-send">
             Envoyer
           </v-btn>
         </div>
+
       </v-form>
     </v-card>
   </div>
@@ -69,9 +70,9 @@ const handleEnterPress = (e: KeyboardEvent) => {
 <style scoped>
 .chat-input-container {
   width: 100%;
-  position: sticky;
-  bottom: 0;
-  padding: 10px 20px;
+  /* position: sticky; */
+  /* bottom: 0; */
+  padding: 0px 10px;
   background-color: var(--color-interface-background);
   border-top: 1px solid var(--color-interface-border);
 }

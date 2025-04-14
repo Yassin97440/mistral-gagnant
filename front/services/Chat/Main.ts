@@ -37,8 +37,8 @@ export class Main {
     }
     public async askQuestion(conversation: ChatMessage[]) {
 
-        this.generateResponseTestRag({ context: [], question: conversation })
-      
+        return await this.generateResponse({ context: [], question: conversation })
+
     }
 
     async getPromptTemplate() {
@@ -53,7 +53,6 @@ export class Main {
 
     public generateResponse = async (state: typeof StateAnnotation.State) => {
         const lastMessage = state.question[state.question.length - 1] || { role: 'user', content: 'hello' };
-        console.log("🚀 ~ Main ~ askQuestion ~ lastMessage:", lastMessage)
 
         const response = await this.graph.invoke({ messages: lastMessage as Messages }, this.config);
         console.log("🚀 ~ Main ~ generateResponse= ~ response:", response.messages[response.messages.length - 1])
@@ -62,7 +61,6 @@ export class Main {
 
     public generateResponseTestRag = async (state: typeof StateAnnotation.State) => {
         const lastMessage = state.question[state.question.length - 1] || { role: 'user', content: 'hello' };
-        console.log("🚀 ~ Main ~ askQuestion ~ lastMessage:", lastMessage)
 
         for await (const step of await this.graph.stream({ messages: lastMessage as Messages }, {
             streamMode: "values",
