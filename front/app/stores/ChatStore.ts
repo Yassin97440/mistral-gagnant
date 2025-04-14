@@ -1,18 +1,6 @@
 // stores/user.ts
 import { defineStore } from 'pinia'
-
-//
-export interface Message {
-    role: 'system' | 'user' | 'assistant'
-    content: string
-}
-
-//conversation entre user et assistant
-interface Chat {
-    id: number
-    title: string,
-    messages: Array<Message>
-}
+import type { Messages } from '@langchain/langgraph'
 
 interface ChatStore {
     chats: Chat[],
@@ -28,7 +16,7 @@ export const useChatStore = defineStore('chat', {
     }),
 
     actions: {
-        async sendMessage(content: Message, chatId: number) {
+        async sendMessage(content: Messages, chatId: number) {
             this.isLoading = true
             try {
                 const chainResponse: any = await $fetch('/api/askQuestion', {
@@ -39,7 +27,7 @@ export const useChatStore = defineStore('chat', {
                     }
                 })
                 console.log("mistral response", chainResponse)
-                const res: Message = { role: 'assistant', content: chainResponse.toString() }
+                const res: Messages = { role: 'assistant', content: chainResponse.toString() }
                 this.addMessages(res, chatId)
                 return chainResponse;
             }
@@ -52,7 +40,7 @@ export const useChatStore = defineStore('chat', {
             }
         },
 
-        addMessages(message: Message, chatId: number) {
+        addMessages(message: Messages, chatId: number) {
             const actualChat = this.chats.find(chat => chat.id === chatId)
             console.log("choose chat for message", actualChat)
             actualChat?.messages.push(message)
@@ -70,7 +58,7 @@ export const useChatStore = defineStore('chat', {
             } else {
                 newChatId = this.chats.length + 1;
             }
-            const systemPrompt: Message[] = [{
+            const systemPrompt: Messages[] = [{
                 role: 'system',
                 content: `-Tu es un chatbot. Tu es l'assistant de Yassin Abdulla. Ton role est d'etre un assistant de grande qualité pour des taches plus ou moins technique et plus ou moins complexes.
                  Sujets principaux software engineering, à lIA, en passanr par etude besoin, recherche de mission pour freelance développeur en France, gestion de projet, ...

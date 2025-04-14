@@ -13,6 +13,7 @@ import { MistralClient } from "../LLM/MistralClient";
 const llm = new MistralClient().client;
 const tools = new ToolNode([retrieve]);
 const memory = new MemorySaver;
+
 // Step 1: Generate an AIMessage that may include a tool-call to be sent.
 async function queryOrRespond(state: typeof MessagesAnnotation.State) {
     const llmWithTools = llm.bindTools([retrieve]);

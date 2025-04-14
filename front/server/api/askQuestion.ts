@@ -1,5 +1,4 @@
 import { Main } from "~~/services/Chat/Main"
-import { DocumentHandler } from "@yassin97440/mistral-gagnant"
 const main = new Main()
 
 export default defineEventHandler(async (event) => {

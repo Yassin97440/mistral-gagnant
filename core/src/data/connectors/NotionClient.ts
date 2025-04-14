@@ -1,18 +1,8 @@
 import { Client } from '@notionhq/client';
 import { GetPageResponse, QueryDatabaseResponse } from '@notionhq/client/build/src/api-endpoints';
-import { BlockData } from '../../processing/documents/DocumentHandler';
+import { BlockData } from "../../types/BlockData";
 import { NotionPageUtils } from '../../utils/notionContent/NotionPageUtils';
-
-interface NotionPageData {
-    id: string,
-    parentId: string,
-    title: string,
-    categories: string[],
-    authorName: string,
-    status: string,
-    createdDate: Date
-    lastUpdateDate: Date
-}
+import { NotionPageData } from '../../types/NotionPageData';
 
 export class NotionClient {
     private client: Client;
@@ -43,17 +33,13 @@ export class NotionClient {
 
 
     /**
-     * Extrait les IDs de pages à partir d'une réponse de requête de base de données
-     * @returns Un tableau contenant tous les IDs de pages
+     * Extrait les data de pages à partir d'une réponse de requête de base de données
+     * @returns Un tableau contenant tous les data de pages
      */
     async getPagesDataFromDatabase(databaseId: string): Promise<NotionPageData[]> {
         try {
             const response = await this.queryDatabase(databaseId);
-
-            // Extraire les IDs de chaque page dans les résultats
             const pagesData = response.results.map(page => {
-                // Vérifier si la page a des propriétés avant d'y accéder
-
                 const pageData: NotionPageData = {
                     id: NotionPageUtils.getPageId(page),
                     parentId: NotionPageUtils.getPageParentId(page),
@@ -91,8 +77,9 @@ export class NotionClient {
 
     /**
      * Récupère le contenu d'un bloc spécifique
-     * @param blockId L'ID du bloc à récupérer
-     * @returns L'objet JSON représentant le bloc
+     * @param block L'objet JSON représentant le bloc
+     * @param page L'objet JSON représentant la page
+     * @returns Le contenu du bloc
      */
     extractBlockContent(block: any, page: NotionPageData): string {
         var content = ""
@@ -100,8 +87,9 @@ export class NotionClient {
     }
 
     /**
-     * Récupère le contenu de plusieurs blocs à partir de leurs IDs
-     * @param blocks Tableau d'IDs de blocs à récupérer
+     * Récupère le contenu de plusieurs blocs
+     * @param blocks Tableau des blocs à récupérer
+     * @param page L'objet JSON représentant la page parente
      * @returns Un tableau d'objets JSON représentant les blocs
      */
     extractAllBlocksData(blocks: [], page: NotionPageData): BlockData {
@@ -116,7 +104,6 @@ export class NotionClient {
             authorName: page.authorName
         };
         const content = blocks.map(blockId => this.extractBlockContent(blockId, page));
-        // Filtrer les chaînes "undefined" et les chaînes vides avant de joindre
         newBlock.content = content
             .filter(text => text !== "undefined" && text !== "")
             .join("");
@@ -124,6 +111,11 @@ export class NotionClient {
 
     }
 
+    /**
+     * Récupère les blocs enfants d'une page (ou block) spécifique
+     * @param blockId L'ID du bloc parent
+     * @returns Un tableau d'objets JSON représentant les blocs enfants
+     */
     async getPageBlocks(blockId: string): Promise<any> {
         try {
             return await this.client.blocks.children.list({
@@ -135,11 +127,14 @@ export class NotionClient {
         }
     }
 
+    /**
+     * Récupère le contenu d'une page
+     * @param page L'objet JSON représentant les métadata de la page
+     * @returns Un objet JSON représentant le contenu de la page
+     */
     async getPageContent(page: NotionPageData): Promise<BlockData> {
         try {
             const pageBlocks = await this.getPageBlocks(page.id);
-            // console.log("🚀 ~ NotionClient ~ getPageContent ~ pageBlocks:", pageBlocks)
-            // console.log("🚀 ~ NotionClient ~ getPageContent ~ pageBlocks.parent:", pageBlocks.results[0].parent)
             const allPageContent =  this.extractAllBlocksData(pageBlocks.results, page);
             console.log("🚀 ~ NotionClient ~ getPageContent ~ allPageContent:", allPageContent)
             return allPageContent;

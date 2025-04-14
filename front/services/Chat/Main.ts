@@ -13,10 +13,8 @@ export class Main {
 
     private config = getNewMemoryConfig();
     private graph = compile()
-    constructor() {
-
-    }
-    public async askQuestion(conversation: ChatMessage[]) {
+    constructor() { }
+    public async askQuestion(conversation: Messages[]) {
 
         return await this.generateResponse({ context: [], question: conversation })
 
@@ -66,11 +64,8 @@ export class Main {
 
 
 
-export interface ChatMessage {
-    role: 'system' | 'user' | 'assistant',
-    content: string
-}
+
 export const StateAnnotation = Annotation.Root({
-    question: (Annotation<ChatMessage[]>),
+    question: (Annotation<Messages[]>),
     context: (Annotation<Document[]>),
 });

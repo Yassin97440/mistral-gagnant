@@ -2,6 +2,7 @@ import { NotionClient } from "../../data/connectors/NotionClient";
 import { getSupabaseVectorStore } from "../../data/connectors/SupabaseVectorStore";
 import { CustomJsonSplitter, DocumentChunk } from "../splitter/CustomJsonSplitter";
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
+import { BlockData } from "../../types/BlockData";
 export class DocumentHandler {
     private BATCH_SIZE = 50;
     private vectoreStore: SupabaseVectorStore;
@@ -108,18 +109,5 @@ export class DocumentHandler {
         });
     }
 }
-
-export interface BlockData {
-    id: string;
-    pageId: string;
-    parentId: string;
-    title: string;
-    authorName: string,
-    content: string;
-    createdAt: Date;
-    documentType?: string[];
-    lastEdited?: Date;
-}
-
 
 
