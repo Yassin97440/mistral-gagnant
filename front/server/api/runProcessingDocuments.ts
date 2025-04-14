@@ -1,6 +1,5 @@
 import { Main } from "~~/services/Chat/Main"
 import { DocumentHandler } from "@yassin97440/mistral-gagnant"
-import { tr } from "vuetify/locale"
 const main = new Main()
 
 export default defineEventHandler(async (event) => {
