@@ -3,16 +3,16 @@ import { defineStore } from 'pinia'
 import type { Messages } from '@langchain/langgraph'
 
 interface ChatStore {
-    chats: Chat[],
-    isLoading: boolean,
-    activeChat: Chat | undefined
+    chats: Ref<Chat[]>,
+    isLoading: Ref<boolean>,
+    activeChat: Ref<Chat | undefined>
 }
 
 export const useChatStore = defineStore('chat', {
     state: (): ChatStore => ({
-        chats: [],
-        isLoading: false,
-        activeChat: undefined
+        chats: ref([]),
+        isLoading: ref(false),
+        activeChat: ref(undefined)
     }),
 
     actions: {
@@ -81,7 +81,8 @@ export const useChatStore = defineStore('chat', {
     },
     persist: {
         storage: piniaPluginPersistedstate.localStorage(),
+        pick: ['chats'],
       },
-
+    
 }
 )

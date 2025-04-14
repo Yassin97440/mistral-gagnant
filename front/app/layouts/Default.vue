@@ -57,8 +57,10 @@
               </div>
               <div class="chat-list">
                 <v-list density="compact" bg-color="transparent">
-                  <v-list-item v-for="conv in chatStore.chats" :key="conv.id" :title="`${conv.title}`"
-                    prepend-icon="mdi-chat-outline" active-color="primary" class="mb-1 tech-list-item"></v-list-item>
+                  <v-list-item v-for="chat in chatStore.chats" :key="chat.id" :title="`${chat.title}`"
+                    prepend-icon="mdi-chat-outline" active-color="primary" class="mb-1 tech-list-item" 
+                    :class="{ 'active-chat': chat.id === activeChat?.id }" @click="chatStore.selectChat(chat.id)">
+                </v-list-item>
                 </v-list>
               </div>
             </div>
@@ -92,17 +94,6 @@ const chatStore = useChatStore();
 
 const drawer = ref(true);
 
-const callTestChroma = async () => {
-  console.log("on appelle le bac")
-  const res = await $fetch("/api/getDbTest", {
-    method: "POST",
-    body: {},
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  console.log(res);
-};
 
 const activeChat = computed(() => {
   return chatStore.activeChat;
@@ -176,6 +167,16 @@ const activeChat = computed(() => {
 
 .tech-list-item:hover {
   background-color: rgba(var(--v-theme-primary), 0.05) !important;
+}
+
+.tech-list-item.active-chat {
+  background-color: rgba(var(--v-theme-primary), 0.1) !important;
+  border-left: 2px solid rgb(var(--v-theme-primary));
+}
+
+.tech-list-item.active-chat:hover {
+  background-color: rgba(var(--v-theme-primary), 0.15) !important;
+  box-shadow: 0 0 10px rgba(var(--v-theme-primary), 0.2);
 }
 
 .app-info {
