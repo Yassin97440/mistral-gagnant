@@ -1,54 +1,26 @@
-import type { Chroma } from "@langchain/community/vectorstores/chroma";
-import { createChromaClient, getEmbeddings } from "../RAG/ChromaUtils";
+
 import { Annotation, type Messages } from "@langchain/langgraph";
 import type { Document } from "langchain/document";
-import { ChatPromptTemplate } from "@langchain/core/prompts";
-import { pull } from "langchain/hub";
-import type { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
 
-import type { ChatMistralAI } from "@langchain/mistralai";
-import MistralClient from "./MistralClient";
-
-import { v4 as uuidv4 } from "uuid";
-
-import DocumentRetriever from "../RAG/documents/Retriever";
-import { getNewMemoryConfig } from "../memory/MemoryUtils";
-import { compile } from "../RAG/Pipeline";
+import { getNewMemoryConfig } from "../../../core/src/utils/memory/MemoryUtils";
+import { compile } from "../../../core/src/workflow/Pipeline"; 
 import type { BaseMessage } from "@langchain/core/messages";
 import { isAIMessage } from "@langchain/core/messages";
 import type { AIMessage } from "@langchain/core/messages";
 
 
 export class Main {
-    private chromaClient: Chroma;
-    private promptTemplate!: ChatPromptTemplate;
-    private llm: ChatMistralAI
-    private emdeddingsFunction: HuggingFaceInferenceEmbeddings
-    private documentRetriever: DocumentRetriever
+
     private config = getNewMemoryConfig();
     private graph = compile()
-    constructor() {
-        this.chromaClient = createChromaClient("rag-0.1");
-
-        this.getPromptTemplate()
-        this.llm = new MistralClient().client
-        this.emdeddingsFunction = getEmbeddings();
-        this.documentRetriever = new DocumentRetriever();
-    }
-    public async askQuestion(conversation: ChatMessage[]) {
+    constructor() { }
+    public async askQuestion(conversation: Messages[]) {
 
         return await this.generateResponse({ context: [], question: conversation })
 
     }
 
-    async getPromptTemplate() {
-        const promptTemplate = await pull<ChatPromptTemplate>('rlm/rag-prompt')
-        this.promptTemplate = promptTemplate
-        return promptTemplate
-    }
-    public getMistralLlm(): ChatMistralAI {
-        return this.llm
-    }
+
 
 
     public generateResponse = async (state: typeof StateAnnotation.State) => {
@@ -85,25 +57,15 @@ export class Main {
     };
 
 
-    async retrieveContext(state: typeof InputStateAnnotation.State) {
-        const retrievedDocs = await this.chromaClient.similaritySearch(state.question)
-        return retrievedDocs
-    }
-
 }
 
 
 
 
 
-export const InputStateAnnotation = Annotation.Root({
-    question: (Annotation<string>),
-});
-export interface ChatMessage {
-    role: 'system' | 'user' | 'assistant',
-    content: string
-}
+
+
 export const StateAnnotation = Annotation.Root({
-    question: (Annotation<ChatMessage[]>),
+    question: (Annotation<Messages[]>),
     context: (Annotation<Document[]>),
 });

@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "nuxt build",
-    "dev": "nuxt dev",
+    "dev": "nuxt dev --host",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
@@ -17,6 +17,8 @@
     "@langchain/mistralai": "^0.2.0",
     "@mdi/font": "^7.4.47",
     "@pinia/nuxt": "^0.10.1",
+    "@supabase/supabase-js": "^2.49.4",
+    "@yassin97440/mistral-gagnant": "^0.0.7",
     "chromadb": "^2.1.0",
     "chromadb-default-embed": "latest",
     "langchain": "^0.3.19",

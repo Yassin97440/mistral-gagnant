@@ -18,6 +18,13 @@
 
       <v-spacer></v-spacer>
 
+      <v-btn variant="text" 
+             class="mx-2 rag-button glow-hover" 
+             :to="'/rag'" 
+             prepend-icon="mdi-database-sync">
+        RAG
+      </v-btn>
+
       <div class="status-indicator me-3">
         <span class="status-dot"></span>
         <span text-primary class="text-caption text-primary/50">Online</span>
@@ -267,5 +274,41 @@ const activeChat = computed(() => {
     opacity: 0.7;
     filter: drop-shadow(0 0 2px rgba(var(--v-theme-primary), 0.5));
   }
+}
+
+.rag-button {
+  color: rgb(var(--v-theme-primary));
+  border-radius: 20px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  background: rgba(var(--v-theme-primary), 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.rag-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg, 
+    transparent, 
+    rgba(var(--v-theme-primary), 0.2), 
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.rag-button:hover::before {
+  left: 100%;
+}
+
+.rag-button:hover {
+  background: rgba(var(--v-theme-primary), 0.15);
+  box-shadow: 0 0 10px rgba(var(--v-theme-primary), 0.3);
 }
 </style>
