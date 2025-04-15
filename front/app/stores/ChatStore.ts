@@ -16,12 +16,12 @@ export const useChatStore = defineStore('chat', {
     }),
 
     actions: {
-        async sendMessage(content: Messages, chatId: number) {
+        async sendMessage(content: Messages, chatId: string) {
             this.isLoading = true
             try {
                 const chainResponse: any = await $fetch('/api/askQuestion', {
                     method: 'POST',
-                    body: this.activeChat?.messages,
+                    body: this.activeChat,
                     headers: {
                         'Content-Type': 'application/json'
                     }
@@ -40,30 +40,25 @@ export const useChatStore = defineStore('chat', {
             }
         },
 
-        addMessages(message: Messages, chatId: number) {
+        addMessages(message: Messages, chatId: string) {
             const actualChat = this.chats.find(chat => chat.id === chatId)
             console.log("choose chat for message", actualChat)
             actualChat?.messages.push(message)
         },
 
-        selectChat(chatId: number) {
+        selectChat(chatId: string) {
             this.activeChat = this.chats.find(chat => chat.id === chatId)
             return this.activeChat
         },
 
-        createNewChat() {
-            const newChatId = this.chats.length + 1;
+        async createNewChat() {
+            const newChat: Chat = await $fetch('/api/createNewChat')
 
-            const systemPrompt: Messages[] = [];
-            this.chats.push({
-                id: newChatId,
-                title: `Chat ${newChatId}`,
-                messages: systemPrompt
-            });
+            this.chats.push(newChat);
 
-            this.selectChat(newChatId);
+            this.selectChat(newChat.id);
 
-            return newChatId;
+            return newChat;
         },
 
         deleteChat(chatId: number) {

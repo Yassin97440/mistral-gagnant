@@ -21,7 +21,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useChatStore } from "~/stores/ChatStore";
-
+import type { Messages } from "@langchain/langgraph";
 const activeChat = computed(() => {
   return chatStore.activeChat;
 });
@@ -32,25 +32,23 @@ const userMessage = ref("");
 const sendMessage = async () => {
   if (!userMessage.value.trim() || chatStore.isLoading) return;
 
-  console.log("🚀 ~ sendMessage ~ activeChat:", activeChat)
   if (!activeChat.value) {
-    chatStore.createNewChat();
+    await chatStore.createNewChat();
     console.log("AYOOOO")
   }
 
   const messageContent = userMessage.value;
   userMessage.value = "";
 
-  const newMessage: Message = {
+  const newMessage: Messages = {
     role: "user",
     content: messageContent,
   };
   if (activeChat?.value) {
-
     chatStore.addMessages(newMessage, activeChat?.value?.id);
     // Envoyer au backend et recevoir la réponse
     try {
-      const response = await chatStore.sendMessage(
+      await chatStore.sendMessage(
         newMessage,
         activeChat?.value?.id
       );
