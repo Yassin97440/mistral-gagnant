@@ -1,6 +1,8 @@
 // stores/user.ts
 import { defineStore } from 'pinia'
 import type { Messages } from '@langchain/langgraph'
+import type ChatParams from '../../../core/src/types/ChatParams'
+import type DocumentProcessingParams from '../../../core/dist/types/DocumentProcessingParams'
 
 interface ChatStore {
     chats: Ref<Chat[]>,
@@ -18,10 +20,24 @@ export const useChatStore = defineStore('chat', {
     actions: {
         async sendMessage(content: Messages, chatId: string) {
             this.isLoading = true
+            const baseParams: DocumentProcessingParams = {
+                huggingfaceApiKey: useCredentialsStore().credentials.huggingfaceApiKey,
+                mistralApiKey: useCredentialsStore().credentials.mistralApiKey,
+                notionApiKey: useCredentialsStore().credentials.notionApiKey,
+                notionDatabaseId: useCredentialsStore().credentials.notionDatabaseId,
+                supabaseApiKey: useCredentialsStore().credentials.supabaseApiKey,
+                supabaseUrl: useCredentialsStore().credentials.supabaseUrl,
+            }
+            const chatParams: ChatParams = {
+                credentials: baseParams,
+                MistralApiKey: useCredentialsStore().credentials.mistralApiKey,
+                MistralModel: "mistral-large-latest",
+                activeChat: this.activeChat as Chat
+            }
             try {
                 const chainResponse: any = await $fetch('/api/askQuestion', {
                     method: 'POST',
-                    body: this.activeChat,
+                    body: chatParams,
                     headers: {
                         'Content-Type': 'application/json'
                     }

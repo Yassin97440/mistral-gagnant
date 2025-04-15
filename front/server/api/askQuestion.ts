@@ -1,12 +1,9 @@
 import { Main } from "~~/services/Chat/Main"
-const main = new Main()
 
 export default defineEventHandler(async (event) => {
-
-    const chatBotMessages: Chat = await readBody(event)
-    const results = await main.askQuestion(chatBotMessages)
-
-
-    return results
-
+  const chatBotMessages = await readBody(event);
+  // Utiliser le singleton pour maintenir l'état entre les appels
+  const main = Main.getInstance();
+  const results = await main.askQuestion(chatBotMessages);
+  return results;
 })

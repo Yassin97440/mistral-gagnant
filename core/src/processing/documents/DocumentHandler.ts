@@ -13,8 +13,8 @@ export class DocumentHandler {
 
     constructor(processingConfig: DocumentProcessingParams) {
         this.vectoreStore = getSupabaseVectorStore("documents", "store_embedded_documents", processingConfig)
-        this.chunkSize = processingConfig.chunkSize;
-        this.chunkOverlap = processingConfig.chunkOverlap;
+        this.chunkSize = processingConfig.chunkSize || 500;
+        this.chunkOverlap = processingConfig.chunkOverlap || 50;
         this.processingParams = processingConfig;
     }
 

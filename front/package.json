@@ -19,7 +19,7 @@
     "@mdi/font": "^7.4.47",
     "@pinia/nuxt": "^0.10.1",
     "@supabase/supabase-js": "^2.49.4",
-    "@yassin97440/mistral-gagnant": "^0.0.8",
+    "@yassin97440/mistral-gagnant": "0.0.9",
     "chromadb": "^2.1.0",
     "chromadb-default-embed": "latest",
     "langchain": "^0.3.19",

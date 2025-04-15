@@ -1,31 +1,72 @@
-
-import { Annotation, type Messages } from "@langchain/langgraph";
+import { Annotation, Graph, type Messages } from "@langchain/langgraph";
 import type { Document } from "langchain/document";
 
 import type { BaseMessage } from "@langchain/core/messages";
 import { isAIMessage } from "@langchain/core/messages";
 import type { AIMessage } from "@langchain/core/messages";
-import { compile, getMemoryConfig } from "@yassin97440/mistral-gagnant";
-
+import { compile as coreCompile, getMemoryConfig } from "@yassin97440/mistral-gagnant";
+import { MistralClient } from "@yassin97440/mistral-gagnant";
+import { updateRetrieverConfig } from "@yassin97440/mistral-gagnant";
+import type ChatParams from "../../../core/src/types/ChatParams";
+import type DocumentProcessingParams from "../../../core/dist/types/DocumentProcessingParams";
 
 export class Main {
+    private static instance: Main;
+    private graph: any;
+    private initialized: boolean = false;
 
-    private graph = compile()
-    constructor() { }
-    public async askQuestion(conversation: Chat) {
+    private constructor() {}
 
-        return await this.generateResponse({ context: [], question: conversation.messages }, conversation.id)
-
+    public static getInstance(): Main {
+        if (!Main.instance) {
+            Main.instance = new Main();
+        }
+        return Main.instance;
     }
 
-    public generateResponse = async (state: typeof StateAnnotation.State, chatId: string) => {
-        const lastMessage = state.question[state.question.length - 1] || { role: 'user', content: 'hello' };
-        const memoryConfig = getMemoryConfig(chatId);
-        const response = await this.graph.invoke({ messages: lastMessage as Messages }, memoryConfig);
-        console.log("🚀 ~ Main ~ generateResponse= ~ response:", response.messages[response.messages.length - 1])
-        return response.messages[response.messages.length - 1]?.content;
-    };
+    public async initialize(credentials: DocumentProcessingParams): Promise<void> {
+        console.log("🚀 ~ Main ~ initialize ~ credentials:", credentials)
+        // Met à jour les configurations
+        MistralClient.getInstance().updateConfig({ apiKey: credentials.mistralApiKey });
+        updateRetrieverConfig(credentials);
+        
+        // Initialise le graphe LangGraph
+        this.graph = coreCompile();
+        this.initialized = true;
+    }
 
+    public async askQuestion(chatParams: ChatParams): Promise<any> {
+        await this.initializeIfNeeded(chatParams);
+        return await this.generateResponse(chatParams);
+    }
+
+
+    private async initializeIfNeeded(chatParams: ChatParams) {
+        if (!this.initialized) {
+            await this.initialize(chatParams.credentials);
+        }
+
+        // Vérifier si les credentials ont changé
+        if (chatParams.credentials) {
+            await this.initialize(chatParams.credentials);
+        }
+    }
+
+    private async generateResponse(chatParams: ChatParams) {
+        const lastMessage = chatParams.activeChat.messages[chatParams.activeChat.messages.length - 1] || { role: 'user', content: 'hello' };
+        const memoryConfig = getMemoryConfig(chatParams.activeChat.id);
+        // Exécuter le graphe avec la question
+        const response = await this.graph.invoke({ messages: lastMessage as Messages }, memoryConfig);
+
+        return response.messages[response.messages.length - 1]?.content;
+    }
+
+    /**
+     * Pour avoir plus de logs au niveau de la pipeline
+     * (log du tool retriever, et document retrievé)
+     * @param state 
+     * @param chatId 
+     */
     public generateResponseTestRag = async (state: typeof StateAnnotation.State, chatId: string) => {
         const lastMessage = state.question[state.question.length - 1] || { role: 'user', content: 'hello' };
         const memoryConfig = getMemoryConfig(chatId);
@@ -39,7 +80,6 @@ export class Main {
         }
     };
 
-
     prettyPrint = (message: BaseMessage) => {
         let txt = `[${message.getType()}]: ${message.content}`;
         if ((isAIMessage(message) && message.tool_calls?.length) || 0 > 0) {
@@ -51,14 +91,7 @@ export class Main {
         console.log(txt);
     };
 
-
 }
-
-
-
-
-
-
 
 export const StateAnnotation = Annotation.Root({
     question: (Annotation<Messages[]>),

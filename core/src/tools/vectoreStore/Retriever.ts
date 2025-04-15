@@ -2,19 +2,32 @@ import { z } from "zod";
 import { tool } from "@langchain/core/tools";
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
 import { getSupabaseVectorStore } from "../../data/connectors/SupabaseVectorStore";
+import DocumentProcessingParams from "../../types/DocumentProcessingParams";
 
 const retrieveSchema = z.object({ query: z.string() });
-let vectorStore: SupabaseVectorStore;
+let vectorStore: SupabaseVectorStore ;
 
-const initVectorStore = async () => {
-  vectorStore = getSupabaseVectorStore("documents", "match_documents");
+// Configuration globale qui peut être mise à jour
+let processingConfig: DocumentProcessingParams;
+
+// Fonction pour mettre à jour la configuration
+export const updateRetrieverConfig = (config: DocumentProcessingParams) => {
+  processingConfig = config;
+  // Réinitialiser le vectorStore pour prendre en compte les nouvelles configurations
+  vectorStore = getSupabaseVectorStore("documents", "match_documents", processingConfig);
 };
 
-void initVectorStore();
+const initVectorStore = async () => {
+  if (!vectorStore && processingConfig) {
+    vectorStore = getSupabaseVectorStore("documents", "match_documents", processingConfig);
+  }
+};
 
 const retrieve = tool(
   async ({ query }) => {
-    const retrievedDocs = await vectorStore.similaritySearch(query.toString(), 2);
+    if (!vectorStore) await initVectorStore();
+    
+    const retrievedDocs = await vectorStore.similaritySearch(query.toString(), 4);
 
     const serialized = retrievedDocs
       .map(

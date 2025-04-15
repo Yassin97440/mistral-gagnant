@@ -1,7 +1,7 @@
 ---
 description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
 # Guide de développement front-end (Nuxt3 + Vuetify + Tailwind + Cursor)
 

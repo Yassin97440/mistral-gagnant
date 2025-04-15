@@ -10,7 +10,7 @@ interface MistralConfig {
 }
 
 export class MistralClient {
-
+    private static instance: MistralClient;
     public client: ChatMistralAI;
     private config: MistralConfig;
 
@@ -20,6 +20,20 @@ export class MistralClient {
         apiKey: process.env.MISTRAL_API_KEY
     }) {
         this.config = config;
+        this.client = new ChatMistralAI({
+            ...this.config
+        });
+    }
+
+    public static getInstance(config?: MistralConfig): MistralClient {
+        if (!MistralClient.instance || config) {
+            MistralClient.instance = new MistralClient(config);
+        }
+        return MistralClient.instance;
+    }
+
+    public updateConfig(config: Partial<MistralConfig>): void {
+        this.config = { ...this.config, ...config };
         this.client = new ChatMistralAI({
             ...this.config
         });

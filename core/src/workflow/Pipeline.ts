@@ -14,10 +14,22 @@ const llm = new MistralClient().client;
 const tools = new ToolNode([retrieve]);
 const memory = new MemorySaver;
 
+const baseSystemPrompt =
+        "You are an assistant for question-answering tasks. " +
+        "Use the following pieces of retrieved context to answer " +
+        "the question. If you don't know the answer, say that you " +
+        "don't know. Use three sentences maximum and keep the " +
+        "answer concise. Respond in the language of the question."
+        +"If have have no really question, be humorous and ask for more information.";
 // Step 1: Generate an AIMessage that may include a tool-call to be sent.
 async function queryOrRespond(state: typeof MessagesAnnotation.State) {
     const llmWithTools = llm.bindTools([retrieve]);
-    const response = await llmWithTools.invoke(state.messages);
+    const systemUserPrompt = [
+        new SystemMessage(baseSystemPrompt),
+        ...state.messages
+    ]
+
+    const response = await llmWithTools.invoke(systemUserPrompt);
     // MessagesState appends messages to state instead of overwriting
     return { messages: [response] };
 }
@@ -41,11 +53,7 @@ async function generate(state: typeof MessagesAnnotation.State) {
     // Format into prompt
     const docsContent = toolMessages.map((doc) => doc.content).join("\n");
     const systemMessageContent =
-        "You are an assistant for question-answering tasks. " +
-        "Use the following pieces of retrieved context to answer " +
-        "the question. If you don't know the answer, say that you " +
-        "don't know. Use three sentences maximum and keep the " +
-        "answer concise." +
+        baseSystemPrompt +
         "\n\n" +
         `${docsContent}`;
 
