@@ -14,7 +14,7 @@ export class MistralClient {
     public client: ChatMistralAI;
     private config: MistralConfig;
 
-    constructor(config: MistralConfig = {
+    private constructor(config: MistralConfig = {
         model: "mistral-large-latest",
         temperature: 0,
         apiKey: process.env.MISTRAL_API_KEY

@@ -10,7 +10,7 @@ import { ToolNode, toolsCondition } from "@langchain/langgraph/prebuilt";
 import retrieve from "../tools/vectoreStore/Retriever";
 import { MistralClient } from "../LLM/MistralClient";
 
-const llm = new MistralClient().client;
+const llm = MistralClient.getInstance().client;
 const tools = new ToolNode([retrieve]);
 const memory = new MemorySaver;
 
