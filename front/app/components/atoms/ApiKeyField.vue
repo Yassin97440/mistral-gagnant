@@ -26,9 +26,9 @@
     </v-list-item>
 
     <!-- Dialog pour éditer la valeur -->
-    <v-dialog v-model="dialogOpen" max-width="500px">
-      <v-card>
-        <v-card-title class="text-h6 pb-0">
+    <v-dialog v-model="dialogOpen" max-width="500px" >
+      <v-card class="bg-interface-bg">
+        <v-card-title class="text-h6 pb-0 mt-1">
           Éditer {{ label }}
         </v-card-title>
         
