@@ -3,115 +3,19 @@
         <v-card class="pa-4 mb-6 bg-interface-bg w-9/12 ">
             <v-card-title class="text-h5 font-weight-bold mb-4">Clés d'accès API</v-card-title>
             
-            <v-form ref="form" @submit.prevent="saveCredentials">
-                <v-row class="">
-                    <v-col cols="12" >
-                        <v-text-field
-                            v-model="huggingfaceApiKey"
-                            label="Huggingface API Key"
-                            variant="outlined"
-                            prepend-inner-icon="mdi-key-variant"
-                            hide-details="auto"
-                            class="mb-3 "
-                            color="primary"
-                        />
-                    </v-col>
-
-                    <v-col cols="12">
-                        <v-text-field
-                            v-model="langsmithApiKey"
-                            label="Langsmith API Key"
-                            variant="outlined"
-                            prepend-inner-icon="mdi-key-variant"
-                            hide-details="auto"
-                            class="mb-3"
-                            color="primary"
-                        />
-                    </v-col>
-
-                    <v-col cols="12">
-                        <v-text-field
-                            v-model="langsmithApiUrl"
-                            label="Langsmith API URL"
-                            variant="outlined"
-                            prepend-inner-icon="mdi-link-variant"
-                            hide-details="auto"
-                            class="mb-3"
-                            color="primary"
-                        />
-                    </v-col>
-
-                    <v-col cols="12">
-                        <v-text-field
-                            v-model="mistralApiKey"
-                            label="Mistral API Key"
-                            variant="outlined"
-                            prepend-inner-icon="mdi-key-variant"
-                            hide-details="auto"
-                            class="mb-3"
-                            color="primary"
-                        />
-                    </v-col>
-
-                    <v-col cols="12">
-                        <v-text-field
-                            v-model="notionApiKey"
-                            label="Notion API Key"
-                            variant="outlined"
-                            prepend-inner-icon="mdi-key-variant"
-                            hide-details="auto"
-                            class="mb-3"
-                            color="primary"
-                        />
-                    </v-col>
-
-                    <v-col cols="12">
-                        <v-text-field
-                            v-model="notionDatabaseId"
-                            label="Notion Database ID"
-                            variant="outlined"
-                            prepend-inner-icon="mdi-database"
-                            hide-details="auto"
-                            class="mb-3"
-                            color="primary"
-                        />
-                    </v-col>
-
-                    <v-col cols="12">
-                        <v-text-field
-                            v-model="supabaseApiKey"
-                            label="Supabase API Key"
-                            variant="outlined"
-                            prepend-inner-icon="mdi-key-variant"
-                            hide-details="auto"
-                            class="mb-3"
-                            color="primary"
-                        />
-                    </v-col>
-
-                    <v-col cols="12">
-                        <v-text-field
-                            v-model="supabaseUrl"
-                            label="Supabase URL"
-                            variant="outlined"
-                            prepend-inner-icon="mdi-link-variant"
-                            hide-details="auto"
-                            class="mb-3"
-                            color="primary"
+            <v-form ref="form" @submit.prevent="saveAll">
+                <v-row>
+                    <v-col cols="12" v-for="(field, index) in apiFields" :key="index" class="m-1 bg-secondary rounded-lg">
+                        <ApiKeyField
+                            v-model="apiValues[field.key]"
+                            :label="field.label"
+                            :icon="field.icon"
+                            :hasValue="hasValue(field.key)"
+                            @save="saveField(field.key)"
                         />
                     </v-col>
                 </v-row>
 
-                <v-card-actions class="pt-4">
-                    <v-spacer></v-spacer>
-                    <v-btn
-                        color="primary"
-                        type="submit"
-                        prepend-icon="mdi-content-save"
-                    >
-                        Enregistrer
-                    </v-btn>
-                </v-card-actions>
             </v-form>
         </v-card>
     </v-container>
@@ -119,6 +23,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import ApiKeyField from '~/components/atoms/ApiKeyField.vue'
 
 definePageMeta({
   layout: 'rag'
@@ -127,27 +32,61 @@ definePageMeta({
 const form = ref(null)
 const credentialsStore = useCredentialsStore()
 
-// Utiliser des refs au lieu de computed pour permettre la modification
-const huggingfaceApiKey = ref(credentialsStore.credentials.huggingfaceApiKey || '')
-const langsmithApiKey = ref(credentialsStore.credentials.langsmithApiKey || '')
-const langsmithApiUrl = ref(credentialsStore.credentials.langsmithApiUrl || '')
-const mistralApiKey = ref(credentialsStore.credentials.mistralApiKey || '')
-const notionApiKey = ref(credentialsStore.credentials.notionApiKey || '')
-const notionDatabaseId = ref(credentialsStore.credentials.notionDatabaseId || '')
-const supabaseApiKey = ref(credentialsStore.credentials.supabaseApiKey || '')
-const supabaseUrl = ref(credentialsStore.credentials.supabaseUrl || '')
+// Définition des champs API
+type ApiKeyField = keyof typeof credentialsStore.credentials;
 
-// Fonction pour sauvegarder les modifications
-const saveCredentials = () => {
+interface ApiFieldConfig {
+  key: ApiKeyField;
+  label: string;
+  icon: string;
+}
+
+const apiFields: ApiFieldConfig[] = [
+  { key: 'huggingfaceApiKey', label: 'Huggingface API Key', icon: 'mdi-key-variant' },
+  { key: 'langsmithApiKey', label: 'Langsmith API Key', icon: 'mdi-key-variant' },
+  { key: 'langsmithApiUrl', label: 'Langsmith API URL', icon: 'mdi-link-variant' },
+  { key: 'mistralApiKey', label: 'Mistral API Key', icon: 'mdi-key-variant' },
+  { key: 'notionApiKey', label: 'Notion API Key', icon: 'mdi-key-variant' },
+  { key: 'notionDatabaseId', label: 'Notion Database ID', icon: 'mdi-database' },
+  { key: 'supabaseApiKey', label: 'Supabase API Key', icon: 'mdi-key-variant' },
+  { key: 'supabaseUrl', label: 'Supabase URL', icon: 'mdi-link-variant' }
+]
+
+// Objet réactif pour stocker les valeurs
+const apiValues = ref({
+  huggingfaceApiKey: credentialsStore.credentials.huggingfaceApiKey || '',
+  langsmithApiKey: credentialsStore.credentials.langsmithApiKey || '',
+  langsmithApiUrl: credentialsStore.credentials.langsmithApiUrl || '',
+  mistralApiKey: credentialsStore.credentials.mistralApiKey || '',
+  notionApiKey: credentialsStore.credentials.notionApiKey || '',
+  notionDatabaseId: credentialsStore.credentials.notionDatabaseId || '',
+  supabaseApiKey: credentialsStore.credentials.supabaseApiKey || '',
+  supabaseUrl: credentialsStore.credentials.supabaseUrl || ''
+})
+
+// Fonction pour vérifier si un champ contient une valeur
+const hasValue = (field: ApiKeyField) => {
+  return !!credentialsStore.credentials[field]
+}
+
+// Fonction pour sauvegarder un champ spécifique
+const saveField = (field: ApiKeyField) => {
+  const currentCredentials = { ...credentialsStore.credentials }
+  currentCredentials[field] = apiValues.value[field]
+  credentialsStore.updateCredentials(currentCredentials)
+}
+
+// Fonction pour sauvegarder toutes les modifications
+const saveAll = () => {
   credentialsStore.updateCredentials({
-    huggingfaceApiKey: huggingfaceApiKey.value,
-    langsmithApiKey: langsmithApiKey.value,
-    langsmithApiUrl: langsmithApiUrl.value,
-    mistralApiKey: mistralApiKey.value,
-    notionApiKey: notionApiKey.value,
-    notionDatabaseId: notionDatabaseId.value,
-    supabaseApiKey: supabaseApiKey.value,
-    supabaseUrl: supabaseUrl.value
+    huggingfaceApiKey: apiValues.value.huggingfaceApiKey,
+    langsmithApiKey: apiValues.value.langsmithApiKey,
+    langsmithApiUrl: apiValues.value.langsmithApiUrl,
+    mistralApiKey: apiValues.value.mistralApiKey,
+    notionApiKey: apiValues.value.notionApiKey,
+    notionDatabaseId: apiValues.value.notionDatabaseId,
+    supabaseApiKey: apiValues.value.supabaseApiKey,
+    supabaseUrl: apiValues.value.supabaseUrl
   })
 }
 </script>
@@ -167,5 +106,4 @@ const saveCredentials = () => {
 .custom-input .v-field--variant-outlined .v-field__outline__notch {
   border-color: var(--v-theme-primary) !important;
 }
-
 </style>
