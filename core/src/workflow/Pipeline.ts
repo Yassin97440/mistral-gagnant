@@ -9,8 +9,9 @@ import { ToolNode, toolsCondition } from "@langchain/langgraph/prebuilt";
 
 import retrieve from "../tools/vectoreStore/Retriever";
 import { MistralClient } from "../LLM/MistralClient";
+import { OllamaClient } from "../LLM/OllamaClient";
 
-const llm = MistralClient.getInstance().client;
+const llm = OllamaClient.getInstance().client;
 const tools = new ToolNode([retrieve]);
 const memory = new MemorySaver;
 

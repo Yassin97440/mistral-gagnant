@@ -3,7 +3,6 @@ import { Ollama } from "@langchain/ollama";
 interface OllamaConfig {
     model: string;
     temperature: number;
-    apiKey: string;
 }
 
 export class OllamaClient {
@@ -12,8 +11,7 @@ export class OllamaClient {
 
     private constructor(config: OllamaConfig = {
         model: "cogito:3b",
-        temperature: 0,
-        apiKey: process.env.MISTRAL_API_KEY || ""
+        temperature: 0
     }) {
         this.config = config;
     }
