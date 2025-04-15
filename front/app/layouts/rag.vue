@@ -35,7 +35,7 @@
       </v-btn>
     </v-app-bar>
 
-    <v-navigation-drawer  location="left" class="side-navigation rag-panel text-primary">
+    <v-navigation-drawer  location="left" class="side-navigation rag-panel text-primary ">
       <v-list-item prepend-icon="mdi-key" title="Mes clés API" to="/AccessConfig"></v-list-item>
       <v-list-item prepend-icon="mdi-database-settings" title="RAG" to="/RAG"></v-list-item>
     </v-navigation-drawer>
@@ -83,7 +83,7 @@
 .glass-panel {
   backdrop-filter: blur(10px);
   background: rgba(var(--v-theme-interface-bg), 0.7);
-  border-bottom: 1px solid rgba(var(--v-theme-accent), 0.1);
+  border-bottom: 1px solid rgba(var(--v-theme-primary), 0.1);
   position: static;
   top: 0;
   z-index: 10;
@@ -91,7 +91,7 @@
 
 .rag-panel {
   background: rgba(var(--v-theme-interface-bg), 0.9);
-  border-right: 1px solid rgba(var(--v-theme-accent), 0.15);
+  border-right: 1px solid rgba(var(--v-theme-primary), 0.15);
   display: flex;
   flex-direction: column;
   justify-content: space-between;

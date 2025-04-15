@@ -46,7 +46,8 @@ const items = computed(() => {
 const headers = ref([
     { title: 'Titre', key: 'title' },
     { title: 'Statut', key: 'status' },
-    { title: 'Base Notion', key: 'NotionDatabase' }
+    { title: 'Base de données Notion', key: 'databaseId' },
+    { title: 'Date', key: 'date' }
 ]);
 
 const processDocuments = async () => {

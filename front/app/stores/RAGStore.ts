@@ -2,7 +2,7 @@
 import { defineStore } from 'pinia'
 
 interface RAGStore {
-    processingHistorics: {title: string, status: string, date: Date, databaseId: string}[] | undefined
+    processingHistorics: {title: string, status: string, date: string, databaseId: string}[] | undefined
     processingStatus: string | null
     isProcessing: boolean
 }
@@ -28,12 +28,12 @@ export const useRAGStore = defineStore('RAG', {
                 
                 const result = await response.text();
                 this.processingStatus = "Traitement terminé avec succès!";
-                this.newProcessingHistory(result, "success", "databaseId");
+                this.newProcessingHistory("Processing n°" + this.processingHistorics?.length + 1, "success", "databaseId");
                 return result;
             } catch (error) {
                 console.error("Erreur lors du traitement des documents:", error);
                 this.processingStatus = "Erreur lors du traitement des documents";
-                this.newProcessingHistory("Erreur lors du processing n°" + this.processingHistorics?.length + 1, "error", "databaseId");
+                this.newProcessingHistory("Processing n°" + this.processingHistorics?.length + 1, "error", "databaseId");
                 throw error;
             } finally {
                 this.isProcessing = false;
@@ -47,7 +47,7 @@ export const useRAGStore = defineStore('RAG', {
             this.processingHistorics.push({
                 title: title,
                 status: status,
-                date: new Date(),
+                date: new Date().toLocaleString(),
                 databaseId: databaseId
             });
         }

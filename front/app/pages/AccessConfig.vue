@@ -1,18 +1,19 @@
 <template>
-    <v-container>
-        <v-card class="pa-4 mb-6 bg-interface-bg">
+    <v-container class="flex justify-center">
+        <v-card class="pa-4 mb-6 bg-interface-bg w-9/12 ">
             <v-card-title class="text-h5 font-weight-bold mb-4">Clés d'accès API</v-card-title>
             
             <v-form ref="form" @submit.prevent="saveCredentials">
-                <v-row class="border-primary">
-                    <v-col cols="12">
+                <v-row class="">
+                    <v-col cols="12" >
                         <v-text-field
                             v-model="huggingfaceApiKey"
                             label="Huggingface API Key"
                             variant="outlined"
                             prepend-inner-icon="mdi-key-variant"
                             hide-details="auto"
-                            class="mb-3"
+                            class="mb-3 "
+                            color="primary"
                         />
                     </v-col>
 
@@ -24,6 +25,7 @@
                             prepend-inner-icon="mdi-key-variant"
                             hide-details="auto"
                             class="mb-3"
+                            color="primary"
                         />
                     </v-col>
 
@@ -35,6 +37,7 @@
                             prepend-inner-icon="mdi-link-variant"
                             hide-details="auto"
                             class="mb-3"
+                            color="primary"
                         />
                     </v-col>
 
@@ -46,6 +49,7 @@
                             prepend-inner-icon="mdi-key-variant"
                             hide-details="auto"
                             class="mb-3"
+                            color="primary"
                         />
                     </v-col>
 
@@ -57,6 +61,7 @@
                             prepend-inner-icon="mdi-key-variant"
                             hide-details="auto"
                             class="mb-3"
+                            color="primary"
                         />
                     </v-col>
 
@@ -68,6 +73,7 @@
                             prepend-inner-icon="mdi-database"
                             hide-details="auto"
                             class="mb-3"
+                            color="primary"
                         />
                     </v-col>
 
@@ -79,6 +85,7 @@
                             prepend-inner-icon="mdi-key-variant"
                             hide-details="auto"
                             class="mb-3"
+                            color="primary"
                         />
                     </v-col>
 
@@ -90,6 +97,7 @@
                             prepend-inner-icon="mdi-link-variant"
                             hide-details="auto"
                             class="mb-3"
+                            color="primary"
                         />
                     </v-col>
                 </v-row>
@@ -143,3 +151,21 @@ const saveCredentials = () => {
   })
 }
 </script>
+
+<style scoped>
+.custom-input .v-field__input {
+  color: white; /* Texte saisi */
+}
+
+.custom-input .v-label,
+.custom-input .v-field__outline {
+  color: var(--v-theme-primary); /* Label + bordure */
+  border-color: var(--v-theme-primary); /* Bordure pour `outlined` */
+}
+
+/* Si tu veux que la bordure reste colorée même sans focus */
+.custom-input .v-field--variant-outlined .v-field__outline__notch {
+  border-color: var(--v-theme-primary) !important;
+}
+
+</style>
