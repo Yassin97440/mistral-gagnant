@@ -33,8 +33,8 @@ export const useCredentialsStore = defineStore('credentials', {
         this.credentials = credentials
        }
     },
-    // persist: {
-    //     storage: piniaPluginPersistedstate.localStorage(),
-    //     pick: ['processingHistorics'],
-    //   },
+    persist: {
+        storage: piniaPluginPersistedstate.localStorage(),
+        pick: ['credentials'],
+      },
 })
