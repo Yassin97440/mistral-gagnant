@@ -2,6 +2,7 @@ import { DocumentHandler } from '../../src/processing/documents/DocumentHandler'
 import { NotionClient } from '../../src/data/connectors/NotionClient';
 import { jest, describe, beforeEach, it, expect } from '@jest/globals';
 import { BlockData } from '../../src/types/BlockData';
+import DocumentProcessingParams from '../../src/types/DocumentProcessingParams';
 // Mock des dépendances
 jest.mock('../../src/data/connectors/NotionClient');
 jest.mock('../../src/data/connectors/SupabaseVectorStore', () => ({
@@ -16,12 +17,22 @@ describe('DocumentHandler', () => {
   beforeEach(() => {
     // Réinitialiser les mocks
     // jest.clearAllMocks();
+    const processingConfig: DocumentProcessingParams = {
+      chunkSize: 500,
+      chunkOverlap: 50,
+      notionApiKey: process.env.NOTION_API_KEY || "",
+      supabaseUrl: process.env.SUPABASE_URL || "",
+      supabaseApiKey: process.env.SUPABASE_API_KEY || "",
+      huggingfaceApiKey: process.env.HUGGING_FACE_API_KEY || "",
+      mistralApiKey: process.env.MISTRAL_API_KEY || "",
+      notionDatabaseId: process.env.NOTION_DATABASE_ID || ""
+    };
 
     // Créer l'instance de DocumentHandler
-    documentHandler = new DocumentHandler(500, 50);
+    documentHandler = new DocumentHandler(processingConfig);
     
     // Mock NotionClient
-    mockNotionClient = new NotionClient();
+    mockNotionClient = new NotionClient(process.env.NOTION_API_KEY || "");
     jest.spyOn(documentHandler as any, 'getNotionClient').mockReturnValue(mockNotionClient);
   });
 

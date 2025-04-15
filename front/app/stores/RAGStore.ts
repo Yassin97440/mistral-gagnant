@@ -1,5 +1,6 @@
 // stores/user.ts
 import { defineStore } from 'pinia'
+import type DocumentProcessingParams from '../../../core/dist/types/DocumentProcessingParams'
 
 interface RAGStore {
     processingHistorics: {title: string, status: string, date: string, databaseId: string}[] | undefined
@@ -19,8 +20,26 @@ export const useRAGStore = defineStore('RAG', {
             try {
                 this.isProcessing = true;
                 this.processingStatus = "Traitement en cours...";
+
+                const credentials = useCredentialsStore().credentials;
+                const processingConfig: DocumentProcessingParams = {
+                    huggingfaceApiKey: credentials.huggingfaceApiKey,
+                    mistralApiKey: credentials.mistralApiKey,
+                    notionApiKey: credentials.notionApiKey,
+                    notionDatabaseId: credentials.notionDatabaseId,
+                    supabaseApiKey: credentials.supabaseApiKey,
+                    supabaseUrl: credentials.supabaseUrl,
+                    chunkSize: 500,
+                    chunkOverlap: 50
+                }
                 
-                const response = await fetch('/api/runProcessingDocuments');
+                const response = await fetch('/api/runProcessingDocuments', {
+                    method: 'POST',
+                    body: JSON.stringify(processingConfig),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
                 
                 if (!response.ok) {
                     throw new Error(`Erreur: ${response.status}`);

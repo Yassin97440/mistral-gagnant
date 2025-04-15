@@ -7,9 +7,9 @@ import { NotionPageData } from '../../types/NotionPageData';
 export class NotionClient {
     private client: Client;
 
-    constructor() {
+    constructor(notionApiKey: string) {
         this.client = new Client({
-            auth: process.env.NOTION_API_KEY,
+            auth: notionApiKey,
         });
     }
 

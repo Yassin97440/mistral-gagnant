@@ -29,7 +29,7 @@ describe('NotionClient', () => {
     (Client as unknown as jest.Mock).mockImplementation(() => mockClient);
     
     // Instancier NotionClient avec le mock
-    notionClient = new NotionClient();
+    notionClient = new NotionClient(process.env.NOTION_API_KEY || "");
   });
 
   describe('queryDatabase', () => {

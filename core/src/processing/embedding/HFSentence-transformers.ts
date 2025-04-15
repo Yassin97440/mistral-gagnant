@@ -1,8 +1,9 @@
 import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
+import DocumentProcessingParams from "../../types/DocumentProcessingParams";
 
-export function getEmbeddings() {
+export function     getEmbeddings(credentials: DocumentProcessingParams) {
     return new HuggingFaceInferenceEmbeddings({
-        apiKey: process.env.HUGGING_FACE_API_KEY,
+        apiKey: credentials.huggingfaceApiKey,
         model: "sentence-transformers/all-MiniLM-L6-v2",
     });
 }

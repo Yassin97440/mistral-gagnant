@@ -1,10 +1,12 @@
 import { Main } from "~~/services/Chat/Main"
 import { DocumentHandler } from "@yassin97440/mistral-gagnant"
+import DocumentProcessingParams from "../../../core/dist/types/DocumentProcessingParams";
 const main = new Main()
 
 export default defineEventHandler(async (event) => {
     try {
-        const docHandler = new DocumentHandler(1000,200);
+        const credentials: DocumentProcessingParams = await readBody(event);
+        const docHandler = new DocumentHandler(credentials);
         const results = await docHandler.processAllDocumentsWithPagination();
         console.log("Documents processed!!")
         return "success"

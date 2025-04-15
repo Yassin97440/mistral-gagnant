@@ -3,19 +3,19 @@ import { getSupabaseVectorStore } from "../../data/connectors/SupabaseVectorStor
 import { CustomJsonSplitter, DocumentChunk } from "../splitter/CustomJsonSplitter";
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
 import { BlockData } from "../../types/BlockData";
+import  DocumentProcessingParams  from "../../types/DocumentProcessingParams";
 export class DocumentHandler {
     private BATCH_SIZE = 50;
     private vectoreStore: SupabaseVectorStore;
     private chunkSize: number
     private chunkOverlap: number
+    private processingParams: DocumentProcessingParams
 
-    constructor(
-        chunkSize: number,
-        chunkOverlap: number) {
-        this.vectoreStore = getSupabaseVectorStore("documents", "store_embedded_documents")
-        this.chunkSize = chunkSize;
-        this.chunkOverlap = chunkOverlap;
-
+    constructor(processingConfig: DocumentProcessingParams) {
+        this.vectoreStore = getSupabaseVectorStore("documents", "store_embedded_documents", processingConfig)
+        this.chunkSize = processingConfig.chunkSize;
+        this.chunkOverlap = processingConfig.chunkOverlap;
+        this.processingParams = processingConfig;
     }
 
     async processAllDocumentsWithPagination() {
@@ -53,7 +53,7 @@ export class DocumentHandler {
 
     async getAllDocumentsFromNotionDb(): Promise<BlockData[]> {
         const notionClient = this.getNotionClient();
-        const pages = await notionClient.getPagesDataFromDatabase(process.env.NOTION_DATABASE_ID || "");
+        const pages = await notionClient.getPagesDataFromDatabase(this.processingParams.notionDatabaseId || "");
 
         let allDocumentsContents: BlockData[] = [];
         for (let i = 0; i < pages.length; i++) {
@@ -66,7 +66,10 @@ export class DocumentHandler {
     }
 
     private getNotionClient() {
-        return new NotionClient();
+        if (!this.processingParams.notionApiKey) {
+            throw new Error("Notion API key is not set");
+        }
+        return new NotionClient(this.processingParams.notionApiKey);
     }
 
 
