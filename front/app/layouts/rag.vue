@@ -43,20 +43,7 @@
     <v-main class="bg-interface-bg max-h-screen">
       <v-container fluid class=" pa-0">
   
-        <!-- 
-        <v-divider class="border-opacity-10"></v-divider>
-        <div class="pa-4 app-info">
-          <div class="d-flex align-center">
-            <div class="core-dot me-2 accent-dot"></div>
-            <span class="text-caption text-accent">CORE v1.0.0</span>
-          </div>
-          <v-btn variant="text" density="compact" class="rag-text-button" size="small"
-            href="https://github.com/votre-repo" target="_blank">
-            <v-icon size="small" class="me-1">mdi-github</v-icon> GitHub
-          </v-btn>
-        </div>
-      </v-col>
-       -->
+
           <div class="main-content pa-0">
             <div class="rag-border"></div>
             <slot />

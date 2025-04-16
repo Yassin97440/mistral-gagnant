@@ -28,49 +28,14 @@
     <!-- Dialog pour éditer la valeur -->
     <MoleculesUpdateFieldDialog
       v-model:dialogOpen="dialogOpen"
-      v-model="tempValue"
+      :modelValue="modelValue"
       :label="label"
       :icon="icon"
       :hasValue="hasValue"
-      @save="saveAndClose"
+      @update:modelValue="updateValue"
+      @save="saveValue"
     />
-    <!-- <v-dialog v-model="dialogOpen" max-width="500px" >
-      <v-card class="bg-interface-bg">
-        <v-card-title class="text-h6 pb-0 mt-1">
-          Éditer {{ label }}
-        </v-card-title>
-        
-        <v-card-text>
-          <v-text-field
-            v-model="tempValue"
-            :label="label"
-            :prepend-inner-icon="icon"
-            variant="outlined"
-            hide-details="auto"
-            class="mb-3"
-            color="primary"
-          />
-        </v-card-text>
-        
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn 
-            color="grey-darken-1" 
-            variant="text" 
-            @click="cancelEdit"
-          >
-            Annuler
-          </v-btn>
-          <v-btn 
-            color="primary" 
-            variant="text" 
-            @click="saveAndClose"
-          >
-            Enregistrer
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog> -->
+
   </div>
 </template>
 
@@ -100,20 +65,19 @@ const emit = defineEmits(['update:modelValue', 'save']);
 
 // État local du dialogue
 const dialogOpen = ref(false);
-const tempValue = ref('');
 
-// Ouvrir le dialogue (avec un champ vide ou la valeur actuelle)
+// Ouvrir le dialogue
 const openDialog = () => {
-  tempValue.value = props.modelValue;
   dialogOpen.value = true;
 };
 
-// Sauvegarder et fermer - maintenant géré via événements du dialogue
-const saveAndClose = () => {
-  if (tempValue.value) {
-    emit('update:modelValue', tempValue.value);
-    emit('save');
-  }
-  dialogOpen.value = false;
+// Mise à jour de la valeur
+const updateValue = (newValue: string) => {
+  emit('update:modelValue', newValue);
+};
+
+// Sauvegarde et notification
+const saveValue = () => {
+  emit('save');
 };
 </script> 

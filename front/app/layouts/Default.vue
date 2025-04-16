@@ -18,10 +18,7 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn variant="text" 
-             class="mx-2 rag-button glow-hover" 
-             :to="'/rag'" 
-             prepend-icon="mdi-database-sync">
+      <v-btn variant="text" class="mx-2 rag-button glow-hover" :to="'/rag'" prepend-icon="mdi-database-sync">
         RAG
       </v-btn>
 
@@ -37,67 +34,100 @@
         <v-icon>mdi-cog</v-icon>
       </v-btn>
     </v-app-bar>
+    <v-navigation-drawer location="left" class="side-navigation rag-panel text-primary z-0">
+      <div class="pa-4">
+        <v-btn block color="primary" prepend-icon="mdi-plus" class="mb-4 flex justify-center tech-button "
+          @click="chatStore.createNewChat()">
+          <span class="">Nouveau chat</span>
+        </v-btn>
+      </div>
+
+      <div class="tech-section-header mt-2 mb-3">
+        <div class="tech-line"></div>
+        <txt class="text-caption   text-primary mx-2 ">CONVERSATIONS</txt>
+        <div class="tech-line"></div>
+      </div>
+
+      <div class="chat-list">
+        <v-list density="compact" bg-color="transparent" color="flex justify-start">
+          <v-list-item v-for="chat in chatStore.chats" :key="chat.id" :title="`${chat.title}`"
+            prepend-icon="mdi-chat-outline" active-color="primary" class="mb-1 tech-list-item relative"
+            :class="{ 'active-chat': chat.id === activeChat?.id }" @click="chatStore.selectChat(chat.id)">
+            <template v-slot:append>
+              <div class="chat-actions">
+                <v-btn icon size="small" variant="text" class="action-btn edit-btn" @click.stop="editChatTitle(chat)">
+                  <v-icon>mdi-pencil</v-icon>
+                </v-btn>
+                <v-btn icon size="small" variant="text" class="action-btn delete-btn"
+                  @click.stop="confirmDeleteChat(chat)">
+                  <v-icon>mdi-delete</v-icon>
+                </v-btn>
+              </div>
+              <MoleculesUpdateFieldDialog v-model:dialogOpen="dialogOpen" v-model="tempValue" :label="label"
+                :icon="icon" :hasValue="hasValue" @save="saveChatTitle(chat)" />
+            </template>
+          </v-list-item>
+        </v-list>
+      </div>
+    </v-navigation-drawer>
 
     <v-main class="bg-interface-bg max-h-screen">
-      <v-container fluid class="fill-height pa-0">
-        <v-row no-gutters class="fill-height">
-          <v-col cols="12" sm="3" md="2" lg="2" class="side-navigation tech-panel">
-            <div class="pa-4">
-              <v-btn block color="primary" prepend-icon="mdi-plus" class="mb-4 flex justify-center tech-button "
-                @click="chatStore.createNewChat()">
-
-                <span class="">Nouveau chat</span>
-              </v-btn>
-
-
-              <div class="tech-section-header mt-2 mb-3">
-                <div class="tech-line"></div>
-                <txt class="text-caption   text-primary mx-2 ">CONVERSATIONS</txt>
-                <div class="tech-line"></div>
-              </div>
-              <div class="chat-list">
-                <v-list density="compact" bg-color="transparent">
-                  <v-list-item v-for="chat in chatStore.chats" :key="chat.id" :title="`${chat.title}`"
-                    prepend-icon="mdi-chat-outline" active-color="primary" class="mb-1 tech-list-item" 
-                    :class="{ 'active-chat': chat.id === activeChat?.id }" @click="chatStore.selectChat(chat.id)">
-                </v-list-item>
-                </v-list>
-              </div>
-            </div>
-            <v-divider class="border-opacity-10"></v-divider>
-            <div class="pa-4 app-info">
-              <div class="d-flex align-center">
-                <div class="core-dot me-2"></div>
-                <span class="text-caption text-primary">CORE v1.0.0</span>
-              </div>
-              <v-btn variant="text" density="compact" class="tech-text-button" size="small"
-                href="https://github.com/votre-repo" target="_blank">
-                <v-icon size="small" class="me-1">mdi-github</v-icon> GitHub
-              </v-btn>
-            </div>
-          </v-col>
-          <v-col cols="12" sm="9" md="10" lg="10" class="main-content pa-0">
-            <div class="tech-border"></div>
-            <slot />
-          </v-col>
-        </v-row>
-      </v-container>
+      <div class="tech-border"></div>
+      <slot />
     </v-main>
+
+    <v-footer class="bg-interface-bg ">
+      <div class="pa-4 app-info">
+
+        <div class="d-flex align-center">
+          <div class="core-dot me-2"></div>
+          <span class="text-caption text-primary">CORE v1.0.0</span>
+        </div>
+        <v-btn variant="text" density="compact" class="tech-text-button" size="small"
+          href="https://github.com/votre-repo" target="_blank">
+          <v-icon size="small" class="me-1">mdi-github</v-icon> GitHub
+        </v-btn>
+      </div>
+
+    </v-footer>
   </v-app>
+
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
 import { useChatStore } from "~/stores/ChatStore";
 
 const chatStore = useChatStore();
 
-const drawer = ref(true);
-
+const dialogOpen = ref(false);
+const tempValue = ref('');
+const label = ref('Nom de la conversation');
+const icon = ref('mdi-pencil');
+const hasValue = ref(false);
 
 const activeChat = computed(() => {
   return chatStore.activeChat;
 });
+
+const editChatTitle = (chat: Chat) => {
+  label.value = 'Titre de la conversation';
+  icon.value = 'mdi-pencil';
+  hasValue.value = true;
+  tempValue.value = chat.title;
+  dialogOpen.value = true;
+  // chatStore.renameChat(chat.id, chat.title)
+}
+
+const saveChatTitle = (chat: Chat) => {
+  console.log("🚀 ~ saveChatTitle ~ chat:", chat)
+  if (chat.id) {
+    chatStore.renameChat(chat.id, tempValue.value)
+  }
+}
+
+const confirmDeleteChat = (chat: Chat) => {
+  chatStore.deleteChat(chat.id)
+}
 </script>
 
 <style scoped>
@@ -106,6 +136,17 @@ const activeChat = computed(() => {
   background-image:
     radial-gradient(circle at 15% 50%, rgba(var(--v-theme-primary), 0.03) 0%, transparent 25%),
     radial-gradient(circle at 85% 30%, rgba(var(--v-theme-primary), 0.02) 0%, transparent 25%);
+}
+
+.rag-panel {
+  background: rgba(var(--v-theme-interface-bg), 0.9);
+  border-right: 1px solid rgba(var(--v-theme-primary), 0.15);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  position: sticky;
+  overflow: hidden;
 }
 
 .glass-panel {
@@ -163,6 +204,7 @@ const activeChat = computed(() => {
 .tech-list-item {
   border-radius: 4px;
   transition: background-color 0.3s ease;
+  position: relative;
 }
 
 .tech-list-item:hover {
@@ -295,12 +337,10 @@ const activeChat = computed(() => {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg, 
-    transparent, 
-    rgba(var(--v-theme-primary), 0.2), 
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(var(--v-theme-primary), 0.2),
+      transparent);
   transition: left 0.5s ease;
 }
 
@@ -311,5 +351,33 @@ const activeChat = computed(() => {
 .rag-button:hover {
   background: rgba(var(--v-theme-primary), 0.15);
   box-shadow: 0 0 10px rgba(var(--v-theme-primary), 0.3);
+}
+
+.chat-actions {
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+  display: flex;
+  gap: 4px;
+}
+
+.tech-list-item:hover .chat-actions {
+  opacity: 1;
+}
+
+.action-btn {
+  color: rgba(var(--v-theme-primary), 0.7);
+}
+
+.action-btn:hover {
+  color: rgb(var(--v-theme-primary));
+  background-color: rgba(var(--v-theme-primary), 0.1);
+}
+
+.edit-btn:hover {
+  color: rgb(var(--v-theme-primary));
+}
+
+.delete-btn:hover {
+  color: rgb(var(--v-theme-error));
 }
 </style>

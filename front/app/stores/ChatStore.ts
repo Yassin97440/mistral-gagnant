@@ -77,15 +77,15 @@ export const useChatStore = defineStore('chat', {
             return newChat;
         },
 
-        deleteChat(chatId: number) {
-            if (chatId >= 0 && chatId < this.chats.length) {
-                this.chats.splice(chatId, 1);
+        deleteChat(chatId: string) {
+            if (this.chats.length > 0) {
+                this.chats = this.chats.filter(chat => chat.id !== chatId);
             }
         },
 
-        renameChat(chatId: number, newName: string) {
-            const chat = this.chats[chatId];
-            if (chatId >= 0 && chatId < this.chats.length && newName.trim() && chat) {
+        renameChat(chatId: string, newName: string) {
+            const chat = this.chats.find(chat => chat.id === chatId);
+            if (chat) {
                 chat.title = newName.trim();
             }
         }
