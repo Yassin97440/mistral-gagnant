@@ -76,7 +76,7 @@
       <slot />
     </v-main>
 
-    <v-footer class="bg-interface-bg ">
+    <!-- <v-footer class="bg-interface-bg ">
       <div class="pa-4 app-info">
 
         <div class="d-flex align-center">
@@ -89,7 +89,7 @@
         </v-btn>
       </div>
 
-    </v-footer>
+    </v-footer> -->
   </v-app>
 
 </template>
