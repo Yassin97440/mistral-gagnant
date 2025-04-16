@@ -26,7 +26,15 @@
     </v-list-item>
 
     <!-- Dialog pour éditer la valeur -->
-    <v-dialog v-model="dialogOpen" max-width="500px" >
+    <MoleculesUpdateFieldDialog
+      v-model:dialogOpen="dialogOpen"
+      v-model="tempValue"
+      :label="label"
+      :icon="icon"
+      :hasValue="hasValue"
+      @save="saveAndClose"
+    />
+    <!-- <v-dialog v-model="dialogOpen" max-width="500px" >
       <v-card class="bg-interface-bg">
         <v-card-title class="text-h6 pb-0 mt-1">
           Éditer {{ label }}
@@ -62,7 +70,7 @@
           </v-btn>
         </v-card-actions>
       </v-card>
-    </v-dialog>
+    </v-dialog> -->
   </div>
 </template>
 
@@ -94,25 +102,18 @@ const emit = defineEmits(['update:modelValue', 'save']);
 const dialogOpen = ref(false);
 const tempValue = ref('');
 
-// Ouvrir le dialogue (avec un champ vide)
+// Ouvrir le dialogue (avec un champ vide ou la valeur actuelle)
 const openDialog = () => {
-  tempValue.value = '';
+  tempValue.value = props.modelValue;
   dialogOpen.value = true;
 };
 
-// Annuler l'édition
-const cancelEdit = () => {
-  dialogOpen.value = false;
-  tempValue.value = '';
-};
-
-// Sauvegarder et fermer
+// Sauvegarder et fermer - maintenant géré via événements du dialogue
 const saveAndClose = () => {
   if (tempValue.value) {
     emit('update:modelValue', tempValue.value);
     emit('save');
   }
   dialogOpen.value = false;
-  tempValue.value = '';
 };
 </script> 

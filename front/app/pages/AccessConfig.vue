@@ -6,7 +6,7 @@
             <v-form ref="form" @submit.prevent="saveAll">
                 <v-row>
                     <v-col cols="12" v-for="(field, index) in apiFields" :key="index" class="m-1 bg-secondary rounded-lg">
-                        <ApiKeyField
+                        <MoleculesApiKeyField
                             v-model="apiValues[field.key]"
                             :label="field.label"
                             :icon="field.icon"
@@ -22,8 +22,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import ApiKeyField from '~/components/atoms/ApiKeyField.vue'
 
 definePageMeta({
   layout: 'rag'
