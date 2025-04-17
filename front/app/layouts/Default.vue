@@ -49,7 +49,7 @@
       </div>
 
       <div class="chat-list">
-        <v-list density="compact" bg-color="transparent" color="flex justify-start">
+        <v-list à density="compact" bg-color="transparent" color="flex justify-start">
           <v-list-item v-for="chat in chatStore.chats" :key="chat.id" :title="`${chat.title}`"
             prepend-icon="mdi-chat-outline" active-color="primary" class="mb-1 tech-list-item relative"
             :class="{ 'active-chat': chat.id === activeChat?.id }" @click="chatStore.selectChat(chat.id)">
@@ -64,7 +64,7 @@
                 </v-btn>
               </div>
               <MoleculesUpdateFieldDialog v-model:dialogOpen="dialogOpen" v-model="tempValue" :label="label"
-                :icon="icon" :hasValue="hasValue" @save="saveChatTitle(chat)" />
+                :icon="icon" :hasValue="hasValue" @save="() => saveChatTitle(currentEditingChat)" />
             </template>
           </v-list-item>
         </v-list>
@@ -104,23 +104,23 @@ const tempValue = ref('');
 const label = ref('Nom de la conversation');
 const icon = ref('mdi-pencil');
 const hasValue = ref(false);
+const currentEditingChat = ref<Chat | null>(null);
 
 const activeChat = computed(() => {
   return chatStore.activeChat;
 });
 
 const editChatTitle = (chat: Chat) => {
+  currentEditingChat.value = chat;
   label.value = 'Titre de la conversation';
   icon.value = 'mdi-pencil';
   hasValue.value = true;
   tempValue.value = chat.title;
   dialogOpen.value = true;
-  // chatStore.renameChat(chat.id, chat.title)
 }
 
-const saveChatTitle = (chat: Chat) => {
-  console.log("🚀 ~ saveChatTitle ~ chat:", chat)
-  if (chat.id) {
+const saveChatTitle = (chat: Chat | null) => {
+  if (chat && chat.id) {
     chatStore.renameChat(chat.id, tempValue.value)
   }
 }

@@ -19,10 +19,7 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn variant="text" 
-             class="mx-2 rag-button glow-hover" 
-             :to="'/'" 
-             prepend-icon="mdi-chat-processing">
+      <v-btn variant="text" class="mx-2 rag-button glow-hover" :to="'/'" prepend-icon="mdi-chat-processing">
         CHAT
       </v-btn>
 
@@ -35,19 +32,19 @@
       </v-btn>
     </v-app-bar>
 
-    <v-navigation-drawer  location="left" class="side-navigation rag-panel text-primary ">
+    <v-navigation-drawer location="left" class="side-navigation rag-panel text-primary ">
       <v-list-item prepend-icon="mdi-key" title="Mes clés API" to="/AccessConfig"></v-list-item>
       <v-list-item prepend-icon="mdi-database-settings" title="RAG" to="/RAG"></v-list-item>
     </v-navigation-drawer>
 
-    <v-main class="bg-interface-bg max-h-screen">
+    <v-main class="bg-interface-bg min-h-screen">
       <v-container fluid class=" pa-0">
-  
 
-          <div class="main-content pa-0">
-            <div class="rag-border"></div>
-            <slot />
-          </div>
+
+        <div class="main-content pa-0">
+          <div class="rag-border"></div>
+          <slot />
+        </div>
       </v-container>
     </v-main>
   </v-app>
@@ -200,12 +197,10 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg, 
-    transparent, 
-    rgba(var(--v-theme-primary), 0.2), 
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(var(--v-theme-primary), 0.2),
+      transparent);
   transition: left 0.5s ease;
 }
 
@@ -234,4 +229,4 @@
     filter: drop-shadow(0 0 2px rgba(var(--v-theme-accent), 0.5));
   }
 }
-</style> 
+</style>
