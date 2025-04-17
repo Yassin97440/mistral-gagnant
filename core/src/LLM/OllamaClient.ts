@@ -1,6 +1,7 @@
 import { Ollama } from "@langchain/ollama";
 
 interface OllamaConfig {
+    baseUrl: string;
     model: string;
     temperature: number;
 }
@@ -10,6 +11,7 @@ export class OllamaClient {
     private config: OllamaConfig;
 
     private constructor(config: OllamaConfig = {
+        baseUrl: "http://192.168.1.98:11434",
         model: "cogito:3b",
         temperature: 0
     }) {
@@ -31,6 +33,6 @@ export class OllamaClient {
     }
 
 
-    
+
 
 }
