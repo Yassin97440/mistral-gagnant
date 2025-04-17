@@ -14,9 +14,7 @@ import { Ollama } from "ollama";
 import { ChatOllama } from "@langchain/ollama";
 // const llm = OllamaClient.getInstance().client;
 const llm = new ChatOllama({
-    baseUrl: "http://127.0.0.1:11434",
-
-    model: "cogito:3b",
+    model: "cogito:8b",
 });
 const tools = new ToolNode([retrieve]);
 const memory = new MemorySaver;

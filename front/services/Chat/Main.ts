@@ -25,7 +25,6 @@ export class Main {
     }
 
     public async initialize(credentials: DocumentProcessingParams): Promise<void> {
-        console.log("🚀 ~ Main ~ initialize ~ credentials:", credentials)
         // Met à jour les configurations
         MistralClient.getInstance().updateConfig({ apiKey: credentials.mistralApiKey });
         updateRetrieverConfig(credentials);

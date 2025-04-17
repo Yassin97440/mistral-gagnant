@@ -39,7 +39,7 @@ const retrieve = tool(
   },
   {
     name: "retrieve",
-    description: "Retrieve information related to a query.",
+    description: "Retrieve information and context related to a query.",
     schema: retrieveSchema,
     responseFormat: "content_and_artifact",
   }
