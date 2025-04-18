@@ -5,7 +5,7 @@ import { getSupabaseVectorStore } from "../../data/connectors/SupabaseVectorStor
 import DocumentProcessingParams from "../../types/DocumentProcessingParams";
 
 const retrieveSchema = z.object({ query: z.string() });
-let vectorStore: SupabaseVectorStore ;
+let vectorStore: SupabaseVectorStore;
 
 // Configuration globale qui peut être mise à jour
 let processingConfig: DocumentProcessingParams;
@@ -26,19 +26,20 @@ const initVectorStore = async () => {
 const retrieve = tool(
   async ({ query }) => {
     if (!vectorStore) await initVectorStore();
-    
+    console.log("retrieving for query", query);
     const retrievedDocs = await vectorStore.similaritySearch(query.toString(), 4);
 
     const serialized = retrievedDocs
       .map(
-        (doc) => `Source: ${doc.metadata.source}\nContent: ${doc.pageContent}`
+        (doc) => `Source: ${doc.metadata.url}\nContent: ${doc.pageContent}`
       )
       .join("\n");
 
+    console.log("🚀 ~ serialized:", serialized)
     return [serialized, retrievedDocs];
   },
   {
-    name: "retrieve",
+    name: "retrieve_information_and_context",
     description: "Retrieve information and context related to a query.",
     schema: retrieveSchema,
     responseFormat: "content_and_artifact",
