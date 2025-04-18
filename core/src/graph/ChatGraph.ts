@@ -9,20 +9,18 @@ import { ToolNode, toolsCondition } from "@langchain/langgraph/prebuilt";
 
 import retrieve from "../tools/vectoreStore/Retriever";
 
-import { ChatOllama } from "@langchain/ollama";
-import { MistralClient } from "../LLM/MistralClient";
-const llm = MistralClient.getInstance().client;
-// const llm = OllamaClient.getInstance().client;
-// const llm = new ChatOllama({
-//     model: "cogito:8b",
-// });
+import { OllamaClient } from "../LLM/OllamaClient";
+// const llm = MistralClient.getInstance().client;
+const llm = OllamaClient.getInstance({
+    model: "hermes3",
+    temperature: 0.3
+});
 const tools = new ToolNode([retrieve]);
 const memory = new MemorySaver;
 
 const baseSystemPrompt =
-    "You are an versatile assistant and a good guy." +
+    "You are an versatile assistant like Alfred from the movie 'The Dark Knight', or Jarvis from Iron Man." +
     // "You are able to answer questions and help with tasks. And also you can have a discussion with the user. " +
-    "When you need information, ALWAYS use the 'retrieve' tool first. " +
     "Use the following pieces of retrieved context to answer " +
     "the question. If you don't know the answer, use the retrieve tool to search for it. " +
     "Keep the answer concise." +
