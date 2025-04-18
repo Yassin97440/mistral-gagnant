@@ -55,7 +55,7 @@ export class Main {
         const lastMessage = chatParams.activeChat.messages[chatParams.activeChat.messages.length - 1] || { role: 'user', content: 'hello' };
         const memoryConfig = getMemoryConfig(chatParams.activeChat.id);
         // Exécuter le graphe avec la question
-        const response = await this.graph.invoke({ messages: lastMessage as Messages }, memoryConfig);
+        const response = await this.graph.invoke({ messages: lastMessage as Messages , history: chatParams.activeChat.messages}, memoryConfig);
 
         return response.messages[response.messages.length - 1]?.content;
     }
