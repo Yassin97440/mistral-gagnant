@@ -1,7 +1,7 @@
 import { Main } from "~~/services/Chat/Main"
 import { DocumentHandler } from "@yassin97440/mistral-gagnant"
 import DocumentProcessingParams from "../../../core/dist/types/DocumentProcessingParams";
-const main = new Main()
+const main = Main.getInstance()
 
 export default defineEventHandler(async (event) => {
     try {
