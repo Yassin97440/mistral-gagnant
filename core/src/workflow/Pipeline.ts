@@ -10,22 +10,24 @@ import { ToolNode, toolsCondition } from "@langchain/langgraph/prebuilt";
 import retrieve from "../tools/vectoreStore/Retriever";
 
 import { ChatOllama } from "@langchain/ollama";
+import { MistralClient } from "../LLM/MistralClient";
+const llm = MistralClient.getInstance().client;
 // const llm = OllamaClient.getInstance().client;
-const llm = new ChatOllama({
-    model: "cogito:8b",
-});
+// const llm = new ChatOllama({
+//     model: "cogito:8b",
+// });
 const tools = new ToolNode([retrieve]);
 const memory = new MemorySaver;
 
 const baseSystemPrompt =
-"You are an versatile assistant and a good guy." +
-// "You are able to answer questions and help with tasks. And also you can have a discussion with the user. " +
-"When you need information, ALWAYS use the 'retrieve' tool first. " +
-"Use the following pieces of retrieved context to answer " +
-"the question. If you don't know the answer, use the retrieve tool to search for it. " +
-"Keep the answer concise." +
-"Respond in the language of the question. " +
-"If there is no real question, be humorous and ask for more information.";
+    "You are an versatile assistant and a good guy." +
+    // "You are able to answer questions and help with tasks. And also you can have a discussion with the user. " +
+    "When you need information, ALWAYS use the 'retrieve' tool first. " +
+    "Use the following pieces of retrieved context to answer " +
+    "the question. If you don't know the answer, use the retrieve tool to search for it. " +
+    "Keep the answer concise." +
+    "Respond in the language of the question. " +
+    "If there is no real question, be humorous and ask for more information.";
 // Step 1: Generate an AIMessage that may include a tool-call to be sent.
 async function queryOrRespond(state: typeof MessagesAnnotation.State) {
     const llmWithTools = llm.bindTools([retrieve]);
