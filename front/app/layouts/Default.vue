@@ -30,7 +30,9 @@
       <v-btn icon variant="text" class="mx-1 glow-hover text-primary">
         <v-icon>mdi-theme-light-dark</v-icon>
       </v-btn>
-      <v-btn icon variant="text" class="mx-1 glow-hover text-primary">
+      <v-btn icon variant="text" 
+      class="mx-1 glow-hover text-primary" 
+      @click="settingsDialogOpen = true">
         <v-icon>mdi-cog</v-icon>
       </v-btn>
     </v-app-bar>
@@ -75,6 +77,8 @@
       <div class="tech-border"></div>
       <slot />
     </v-main>
+    <SettingsDialog 
+    v-model:openDialog="settingsDialogOpen" />
 
     <!-- <v-footer class="bg-interface-bg ">
       <div class="pa-4 app-info">
@@ -100,6 +104,7 @@ import { useChatStore } from "~/stores/ChatStore";
 const chatStore = useChatStore();
 
 const dialogOpen = ref(false);
+const settingsDialogOpen = ref(false);
 const tempValue = ref('');
 const label = ref('Nom de la conversation');
 const icon = ref('mdi-pencil');
