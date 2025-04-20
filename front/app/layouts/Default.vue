@@ -30,9 +30,7 @@
       <v-btn icon variant="text" class="mx-1 glow-hover text-primary">
         <v-icon>mdi-theme-light-dark</v-icon>
       </v-btn>
-      <v-btn icon variant="text" 
-      class="mx-1 glow-hover text-primary" 
-      @click="settingsDialogOpen = true">
+      <v-btn icon variant="text" class="mx-1 glow-hover text-primary" @click="settingsDialogOpen = true">
         <v-icon>mdi-cog</v-icon>
       </v-btn>
     </v-app-bar>
@@ -71,14 +69,13 @@
           </v-list-item>
         </v-list>
       </div>
+      <SettingsDialog v-model:openDialog="settingsDialogOpen" />
     </v-navigation-drawer>
 
     <v-main class="bg-interface-bg max-h-screen">
       <div class="tech-border"></div>
       <slot />
     </v-main>
-    <SettingsDialog 
-    v-model:openDialog="settingsDialogOpen" />
 
     <!-- <v-footer class="bg-interface-bg ">
       <div class="pa-4 app-info">

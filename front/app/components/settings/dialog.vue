@@ -1,38 +1,33 @@
 <template>
-    <v-dialog v-model="dialog" max-width="1000" class="pr-5">
+    <v-dialog v-model="dialog" class="pr-5 ">
         <v-container class="flex justify-center ">
-            <v-card class="pa-5 mb-6 background-color w-9/12 rounded-lg text-white">
-                <v-card-title class="text-h4 font-weight-bold mb-4">Paramètres</v-card-title>
+            <v-card class="pa-5 mb-6 background-color w-10/12 rounded-lg text-white">
+                <v-card-title class="text-h5 font-weight-bold mb-4 ">Paramètres</v-card-title>
 
                 <v-row>
-                    <v-col cols="3">
-                        <v-btn variant="text" 
-                        class="mx-2 rag-button glow-hover" 
-                        prepend-icon="mdi-database-sync"
-                        @click="displayedSettings = 'apiKeys'"
-                        >
-                        Clés API
-                    </v-btn>
-                    <v-btn variant="text" 
-                        class="mx-2 rag-button glow-hover" 
-                        prepend-icon="mdi-brain"
-                        @click="displayedSettings = 'models'"
-                        >
-                        Modèles
-                    </v-btn>
+                    <v-col cols="2">
+                        <v-btn variant="text" class="mx-2 rag-button glow-hover" prepend-icon="mdi-database-sync"
+                            @click="displayedSettings = 'apiKeys'">
+                            Clés API
+                        </v-btn>
+                        <v-btn variant="text" class="mx-2 rag-button glow-hover" prepend-icon="mdi-brain"
+                            @click="displayedSettings = 'models'">
+                            Modèles
+                        </v-btn>
                     </v-col>
-                    <v-col cols="9">
+                    <v-col cols="10">
                         <div v-if="displayedSettings === 'apiKeys'" class=" mb-4">
-                            <h3 class="text-h5  font-weight-bold mb-4">Clés d'accès API</h3>
-                            <v-form ref="form" @submit.prevent="saveAll">
-                                <v-row>
+                            <h5 class="text-h7  font-weight-bold mb-4">Clés d'accès API</h5>
+                            <v-form ref="form" @submit.prevent="saveAll" class="overflow-y-scroll max-h-52 p-2">
+                                <v-row class="max-w-full">
                                     <v-col cols="12" v-for="(field, index) in apiFields" :key="index"
                                         class="m-1 bg-secondary rounded-lg">
-                                        <MoleculesApiKeyField v-model="apiValues[field.key]" :label="field.label" :icon="field.icon"
-                                            :hasValue="hasValue(field.key)" @save="saveField(field.key)" />
+                                        <MoleculesApiKeyField v-model="apiValues[field.key]" :label="field.label"
+                                            :icon="field.icon" :hasValue="hasValue(field.key)"
+                                            @save="saveField(field.key)" class="max-h-10 " />
                                     </v-col>
                                 </v-row>
-            
+
                             </v-form>
                         </div>
                         <div v-if="displayedSettings === 'models'" class=" mb-4">
@@ -131,7 +126,6 @@ const saveAll = () => {
 </script>
 
 <style scoped>
-
 .background-color {
     background-color: rgba(var(--v-theme-interface-bg), 0.9);
 }

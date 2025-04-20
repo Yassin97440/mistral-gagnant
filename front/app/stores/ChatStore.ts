@@ -7,14 +7,16 @@ import type DocumentProcessingParams from '../../../core/dist/types/DocumentProc
 interface ChatStore {
     chats: Ref<Chat[]>,
     isLoading: Ref<boolean>,
-    activeChat: Ref<Chat | undefined>
+    activeChat: Ref<Chat | undefined>,
+    model: Ref<string>
 }
 
 export const useChatStore = defineStore('chat', {
     state: (): ChatStore => ({
         chats: ref([]),
         isLoading: ref(false),
-        activeChat: ref(undefined)
+        activeChat: ref(undefined),
+        model: ref("mistral")
     }),
 
     actions: {
@@ -31,7 +33,7 @@ export const useChatStore = defineStore('chat', {
             const chatParams: ChatParams = {
                 credentials: baseParams,
                 MistralApiKey: useCredentialsStore().credentials.mistralApiKey,
-                MistralModel: "mistral-large-latest",
+                model: this.model,
                 activeChat: this.activeChat as Chat
             }
             try {
@@ -93,7 +95,7 @@ export const useChatStore = defineStore('chat', {
     persist: {
         storage: piniaPluginPersistedstate.localStorage(),
         pick: ['chats'],
-      },
-    
+    },
+
 }
 )
