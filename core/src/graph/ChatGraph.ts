@@ -107,7 +107,7 @@ export class ChatGraph {
         ];
 
         // Run
-        const response = await this.getLlm().invoke(prompt);
+        const response = await ChatGraph.instance.getLlm().invoke(prompt);
         return { messages: [response] };
     }
 

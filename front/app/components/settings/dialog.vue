@@ -35,6 +35,7 @@
                             <span>Sélectionnez le modèle avec qui vous voulez travailler</span>
                             <v-select v-model="selectedModel" :items="models" item-title="text" label="Modèle"
                                 class="mt-4 custom-select" prepend-icon="mdi-brain" bg-color="interface-bg"></v-select>
+                            <v-divider class="my-4 text-primary"></v-divider>
                             <div class=" mb-4">
                                 <h3 class="text-h5  font-weight-bold mb-4">Température</h3>
                                 <span>Sélectionnez la température avec laquelle vous voulez travailler</span>
@@ -48,7 +49,7 @@
 
                 <v-card-actions>
                     <v-btn variant="text" class="mx-2 rag-button glow-hover" prepend-icon="mdi-database-sync"
-                        @click="dialog = false">
+                        @click="handleDialogChange(false)">
                         Fermer
                     </v-btn>
                 </v-card-actions>

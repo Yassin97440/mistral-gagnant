@@ -4,15 +4,7 @@
     <v-app-bar flat color="transparent" class="glass-panel px-4">
       <div class="d-flex align-center">
         <div class="logo-container me-3">
-          <svg width="32" height="32" viewBox="0 0 32 32" class="reactive-logo">
-            <circle cx="16" cy="16" r="14" fill="transparent" stroke="rgba(var(--v-theme-primary), 0.3)"
-              stroke-width="1" />
-            <circle cx="16" cy="16" r="10" fill="transparent" stroke="rgba(var(--v-theme-primary), 0.5)"
-              stroke-width="1" />
-            <circle cx="16" cy="16" r="6" fill="rgb(var(--v-theme-primary))" class="pulse" />
-            <path d="M12 16 L16 16 L20 16" stroke="white" stroke-width="2" />
-            <path d="M16 12 L16 20" stroke="white" stroke-width="2" />
-          </svg>
+          <img src="/logo.svg" alt="Logo">
         </div>
         <h1 class="text-h6 font-weight-medium tech-text">Mistral Gagnant</h1>
       </div>
@@ -33,7 +25,6 @@
     </v-app-bar>
 
     <v-navigation-drawer location="left" class="side-navigation rag-panel text-primary ">
-      <v-list-item prepend-icon="mdi-key" title="Mes clés API" to="/AccessConfig"></v-list-item>
       <v-list-item prepend-icon="mdi-database-settings" title="RAG" to="/RAG"></v-list-item>
     </v-navigation-drawer>
 
