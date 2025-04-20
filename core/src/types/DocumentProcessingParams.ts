@@ -1,5 +1,5 @@
 interface DocumentProcessingParams {
-    huggingfaceApiKey: string ;
+    huggingfaceApiKey: string;
     mistralApiKey: string;
     notionApiKey: string;
     notionDatabaseId: string;

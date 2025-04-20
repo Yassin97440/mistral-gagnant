@@ -4,18 +4,16 @@ import type { Document } from "langchain/document";
 import type { BaseMessage } from "@langchain/core/messages";
 import { isAIMessage } from "@langchain/core/messages";
 import type { AIMessage } from "@langchain/core/messages";
-import { compile as coreCompile, getMemoryConfig } from "@yassin97440/mistral-gagnant";
-import { MistralClient } from "@yassin97440/mistral-gagnant";
+import { ChatGraph, getMemoryConfig } from "@yassin97440/mistral-gagnant";
 import { updateRetrieverConfig } from "@yassin97440/mistral-gagnant";
-import type ChatParams from "../../../core/src/types/ChatParams";
-import type DocumentProcessingParams from "../../../core/dist/types/DocumentProcessingParams";
+import type ChatParams from "../../../core/dist/types/ChatParams";
 
 export class Main {
     private static instance: Main;
     private graph: any;
     private initialized: boolean = false;
 
-    private constructor() {}
+    private constructor() { }
 
     public static getInstance(): Main {
         if (!Main.instance) {
@@ -24,13 +22,11 @@ export class Main {
         return Main.instance;
     }
 
-    public async initialize(credentials: DocumentProcessingParams): Promise<void> {
-        // Met à jour les configurations
-        MistralClient.getInstance().updateConfig({ apiKey: credentials.mistralApiKey });
-        updateRetrieverConfig(credentials);
-        
-        // Initialise le graphe LangGraph
-        this.graph = coreCompile();
+    public async initialize(chatParams: ChatParams): Promise<void> {
+        updateRetrieverConfig(chatParams.credentials);
+
+        const graphManager = ChatGraph.getInstance(chatParams.model || "mistral", chatParams.temperature || 0.1);
+        this.graph = graphManager.getGraph();
         this.initialized = true;
     }
 
@@ -42,12 +38,7 @@ export class Main {
 
     private async initializeIfNeeded(chatParams: ChatParams) {
         if (!this.initialized) {
-            await this.initialize(chatParams.credentials);
-        }
-
-        // Vérifier si les credentials ont changé
-        if (chatParams.credentials) {
-            await this.initialize(chatParams.credentials);
+            await this.initialize(chatParams);
         }
     }
 
@@ -55,7 +46,7 @@ export class Main {
         const lastMessage = chatParams.activeChat.messages[chatParams.activeChat.messages.length - 1] || { role: 'user', content: 'hello' };
         const memoryConfig = getMemoryConfig(chatParams.activeChat.id);
         // Exécuter le graphe avec la question
-        const response = await this.graph.invoke({ messages: lastMessage as Messages , history: chatParams.activeChat.messages}, memoryConfig);
+        const response = await this.graph.invoke({ messages: lastMessage as Messages, history: chatParams.activeChat.messages }, memoryConfig);
 
         return response.messages[response.messages.length - 1]?.content;
     }
