@@ -1,11 +1,11 @@
 <template>
-    <v-dialog v-model="dialog" class="pr-5 ">
+    <v-dialog v-model="dialog" class="pr-5 " @update:modelValue="handleDialogChange">
         <v-container class="flex justify-center ">
             <v-card class="pa-5 mb-6 background-color w-10/12 rounded-lg text-white">
                 <v-card-title class="text-h5 font-weight-bold mb-4 ">Paramètres</v-card-title>
 
                 <v-row>
-                    <v-col cols="2">
+                    <v-col cols="2" class="text-primary ">
                         <v-btn variant="text" class="mx-2 rag-button glow-hover" prepend-icon="mdi-database-sync"
                             @click="displayedSettings = 'apiKeys'">
                             Clés API
@@ -33,10 +33,24 @@
                         <div v-if="displayedSettings === 'models'" class=" mb-4">
                             <h3 class="text-h5  font-weight-bold mb-4">Modèles</h3>
                             <span>Sélectionnez le modèle avec qui vous voulez travailler</span>
-                            <v-select v-model="selectedModel" :items="models" label="Modèle" class="mt-4"></v-select>
+                            <v-select v-model="selectedModel" :items="models" item-title="text" label="Modèle"
+                                class="mt-4 custom-select" prepend-icon="mdi-brain" bg-color="interface-bg"></v-select>
+                        </div>
+                        <div v-if="displayedSettings === 'temperature'" class=" mb-4">
+                            <h3 class="text-h5  font-weight-bold mb-4">Température</h3>
+                            <span>Sélectionnez la température avec laquelle vous voulez travailler</span>
+                            <v-slider v-model="temperature" :min="0" :max="1" :step="0.1" label="Température"
+                                class="mt-4 custom-slider" bg-color="interface-bg"></v-slider>
                         </div>
                     </v-col>
                 </v-row>
+
+                <v-card-actions>
+                    <v-btn variant="text" class="mx-2 rag-button glow-hover" prepend-icon="mdi-database-sync"
+                        @click="dialog = false">
+                        Fermer
+                    </v-btn>
+                </v-card-actions>
 
             </v-card>
         </v-container>
@@ -52,9 +66,12 @@ const props = defineProps({
     }
 });
 
+const emit = defineEmits(['update:openDialog']);
+
 const displayedSettings = ref('apiKeys')
 
-const selectedModel = ref('')
+const selectedModel = ref({ text: 'Mistral:7b', value: 'mitral' })
+const temperature = ref(0.1)
 const models = ref([
     { text: 'Mistral:7b', value: 'mitral' },
     { text: 'Hermes3:8b', value: 'hermes3' },
@@ -63,6 +80,10 @@ const models = ref([
 watch(() => props.openDialog, (newVal) => {
     dialog.value = newVal
 });
+watch(selectedModel, (newVal) => {
+    console.log(newVal)
+    useChatStore().model = newVal
+})
 const form = ref(null)
 const credentialsStore = useCredentialsStore();
 
@@ -122,6 +143,10 @@ const saveAll = () => {
         supabaseApiKey: apiValues.value.supabaseApiKey,
         supabaseUrl: apiValues.value.supabaseUrl
     })
+}
+
+const handleDialogChange = (val: boolean) => {
+    emit('update:openDialog', val);
 }
 </script>
 
