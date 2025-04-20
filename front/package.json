@@ -16,6 +16,7 @@
     "@langchain/core": "^0.3.44",
     "@langchain/langgraph": "^0.2.63",
     "@langchain/mistralai": "^0.2.0",
+    "@langchain/ollama": "^0.2.0",
     "@mdi/font": "^7.4.47",
     "@pinia/nuxt": "^0.10.1",
     "@supabase/supabase-js": "^2.49.4",

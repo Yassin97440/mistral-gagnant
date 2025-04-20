@@ -8,7 +8,8 @@ interface ChatStore {
     chats: Ref<Chat[]>,
     isLoading: Ref<boolean>,
     activeChat: Ref<Chat | undefined>,
-    model: Ref<string>
+    model: Ref<string>,
+    temperature: Ref<number>
 }
 
 export const useChatStore = defineStore('chat', {
@@ -16,7 +17,8 @@ export const useChatStore = defineStore('chat', {
         chats: ref([]),
         isLoading: ref(false),
         activeChat: ref(undefined),
-        model: ref("mistral")
+        model: ref("mistral"),
+        temperature: ref(0.1)
     }),
 
     actions: {
@@ -34,6 +36,7 @@ export const useChatStore = defineStore('chat', {
                 credentials: baseParams,
                 MistralApiKey: useCredentialsStore().credentials.mistralApiKey,
                 model: this.model,
+                temperature: this.temperature,
                 activeChat: this.activeChat as Chat
             }
             try {
@@ -94,7 +97,7 @@ export const useChatStore = defineStore('chat', {
     },
     persist: {
         storage: piniaPluginPersistedstate.localStorage(),
-        pick: ['chats'],
+        pick: ['chats', 'model', 'temperature'],
     },
 
 }

@@ -42,7 +42,7 @@ export class ChatGraph {
     public static getInstance(model?: string, temperature?: number): ChatGraph {
         if (!ChatGraph.instance ||
             (model && model !== ChatGraph.instance.model) ||
-            (temperature !== undefined && temperature !== ChatGraph.instance.temperature)) {
+            (temperature && temperature !== ChatGraph.instance.temperature)) {
             ChatGraph.instance = new ChatGraph(model, temperature);
         }
         return ChatGraph.instance;

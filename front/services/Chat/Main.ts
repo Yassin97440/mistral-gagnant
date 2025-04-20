@@ -23,6 +23,7 @@ export class Main {
     }
 
     public async initialize(chatParams: ChatParams): Promise<void> {
+
         updateRetrieverConfig(chatParams.credentials);
 
         const graphManager = ChatGraph.getInstance(chatParams.model || "mistral", chatParams.temperature || 0.1);
@@ -38,6 +39,9 @@ export class Main {
 
     private async initializeIfNeeded(chatParams: ChatParams) {
         if (!this.initialized) {
+            await this.initialize(chatParams);
+        }
+        if (this.graph.model !== chatParams.model || this.graph.temperature !== chatParams.temperature) {
             await this.initialize(chatParams);
         }
     }

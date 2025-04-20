@@ -35,12 +35,13 @@
                             <span>Sélectionnez le modèle avec qui vous voulez travailler</span>
                             <v-select v-model="selectedModel" :items="models" item-title="text" label="Modèle"
                                 class="mt-4 custom-select" prepend-icon="mdi-brain" bg-color="interface-bg"></v-select>
-                        </div>
-                        <div v-if="displayedSettings === 'temperature'" class=" mb-4">
-                            <h3 class="text-h5  font-weight-bold mb-4">Température</h3>
-                            <span>Sélectionnez la température avec laquelle vous voulez travailler</span>
-                            <v-slider v-model="temperature" :min="0" :max="1" :step="0.1" label="Température"
-                                class="mt-4 custom-slider" bg-color="interface-bg"></v-slider>
+                            <div class=" mb-4">
+                                <h3 class="text-h5  font-weight-bold mb-4">Température</h3>
+                                <span>Sélectionnez la température avec laquelle vous voulez travailler</span>
+                                <v-slider v-model="temperature" color="primary" :min="0" :max="1" :step="0.1"
+                                    label="Température" class="mt-4 custom-slider" thumb-label bg-color="interface-bg">
+                                </v-slider>
+                            </div>
                         </div>
                     </v-col>
                 </v-row>
@@ -69,11 +70,10 @@ const props = defineProps({
 const emit = defineEmits(['update:openDialog']);
 
 const displayedSettings = ref('apiKeys')
-
-const selectedModel = ref({ text: 'Mistral:7b', value: 'mitral' })
-const temperature = ref(0.1)
+const selectedModel = ref(useChatStore().model || 'mistral')
+const temperature = ref(useChatStore().temperature || 0.1)
 const models = ref([
-    { text: 'Mistral:7b', value: 'mitral' },
+    { text: 'Mistral:7b', value: 'mistral' },
     { text: 'Hermes3:8b', value: 'hermes3' },
     { text: 'cogito:8b', value: 'cogito' }
 ])
@@ -81,8 +81,10 @@ watch(() => props.openDialog, (newVal) => {
     dialog.value = newVal
 });
 watch(selectedModel, (newVal) => {
-    console.log(newVal)
     useChatStore().model = newVal
+})
+watch(temperature, (newVal) => {
+    useChatStore().temperature = newVal
 })
 const form = ref(null)
 const credentialsStore = useCredentialsStore();
@@ -148,6 +150,10 @@ const saveAll = () => {
 const handleDialogChange = (val: boolean) => {
     emit('update:openDialog', val);
 }
+
+// const updateTemperature = (val: number) => {
+//     useChatStore().temperature = val
+// }
 </script>
 
 <style scoped>
