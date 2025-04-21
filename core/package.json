@@ -1,6 +1,6 @@
 {
   "name": "@yassin97440/mistral-gagnant",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "scope": "@yassin97440",
   "author": "Yassin Abdulla <yassinabdulla7@gmail.com>",
   "description": "Core module for RAG and Chat functionalities",
