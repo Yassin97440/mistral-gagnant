@@ -4,14 +4,14 @@ import { getEmbeddings } from "../../processing";
 import DocumentProcessingParams from "../../types/DocumentProcessingParams";
 
 
-export const supabaseClient = createClient(
-  process.env.SUPABASE_URL || "" ,
-  process.env.SUPABASE_PRIVATE_KEY || ""
-);
 
-export function getSupabaseVectorStore(tableName: string, queryName: string, credentials: DocumentProcessingParams) : SupabaseVectorStore {
+
+export function getSupabaseVectorStore(tableName: string, queryName: string, credentials: DocumentProcessingParams): SupabaseVectorStore {
   return new SupabaseVectorStore(getEmbeddings(credentials), {
-    client: supabaseClient,
+    client: createClient(
+      credentials.supabaseUrl || "",
+      credentials.supabaseApiKey || ""
+    ),
     tableName: tableName,
     queryName: queryName,
   });

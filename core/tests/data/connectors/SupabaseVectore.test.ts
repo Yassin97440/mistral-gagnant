@@ -14,7 +14,7 @@ describe('SupabaseVectore', () => {
   let mockSupabaseClient: SupabaseVectorStore;
   let mockEmbeddings: HuggingFaceInferenceEmbeddings;
 
-  const processingConfig: DocumentProcessingParams = {  
+  const processingConfig: DocumentProcessingParams = {
     chunkSize: 500,
     chunkOverlap: 50,
     notionApiKey: process.env.NOTION_API_KEY || "",
@@ -27,37 +27,29 @@ describe('SupabaseVectore', () => {
   beforeEach(() => {
     // Réinitialiser les mocks avant chaque test
     jest.clearAllMocks();
-    
+
     // Configurer les mocks
-    mockSupabaseClient = getSupabaseVectorStore("documents", "match_documents", processingConfig) ;
+    mockSupabaseClient = getSupabaseVectorStore("documents", "match_documents", processingConfig);
     mockEmbeddings = getEmbeddings(processingConfig);
-    
+
   });
 
   it('initialise correctement le vectorStore avec les bonnes valeurs', () => {
-    // Configurer l'environnement pour le test
 
-    // Importer le module après avoir configuré les mocks et l'environnement
     jest.isolateModules(() => {
-      // Cette importation déclenche l'exécution du code dans le module
       require('../../../src/data/connectors/SupabaseVectorStore');
-      console.log("mockSupabaseClient", getSupabaseVectorStore("documents", "match_documents", processingConfig).client);
-      // Vérifier que createClient a été appelé avec les bonnes valeurs
-      expect(createClient).toHaveBeenCalledWith(
+
+      const vectorStore = getSupabaseVectorStore("documents", "match_documents", processingConfig);
+
+      expect(vectorStore.client).toHaveBeenCalledWith(
         process.env.SUPABASE_URL,
         process.env.SUPABASE_PRIVATE_KEY
       );
-      
-      // Vérifier que SupabaseVectorStore a été instancié avec les bons paramètres
-    //   expect(mockSupabaseClient).toHaveBeenCalledWith(
-    //     {
-    //       tableName: 'documents',
-    //       queryName: 'match_documents'
-    //     }
-    //   );
+
+
     });
 
   });
 
-  
+
 });

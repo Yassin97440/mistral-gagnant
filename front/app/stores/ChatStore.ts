@@ -84,6 +84,9 @@ export const useChatStore = defineStore('chat', {
 
         deleteChat(chatId: string) {
             if (this.chats.length > 0) {
+                if (this.activeChat?.id === chatId) {
+                    this.activeChat = undefined;
+                }
                 this.chats = this.chats.filter(chat => chat.id !== chatId);
             }
         },

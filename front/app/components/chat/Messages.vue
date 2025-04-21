@@ -10,7 +10,7 @@
       <template v-else>
         <div v-for="(message, index) in filteredMessages" :key="index" class="message-wrapper my-4" :class="message.role === 'user' ? 'user-message' : 'assistant-message'
           ">
-          <v-card :class="message.role === 'user' ? 'bg-user-bg' : 'bg-assistant-bg'" class="message-card">
+          <v-card :class="message.role === 'user' ? 'bg-user-bg' : 'bg-interface-bg'" class="message-card">
             <v-card-text>
               <div class="d-flex align-center">
                 <v-avatar :class="message.role === 'user' ? 'bg-user-bg' : 'bg-assistant-bg '" class="mr-3">
@@ -35,7 +35,6 @@
 
 <script setup lang="ts">
 import { useChatStore } from "~/stores/ChatStore";
-import { computed } from "vue";
 
 interface Message {
   role: 'user' | 'assistant' | 'system';
@@ -46,6 +45,8 @@ const chatStore = useChatStore();
 const activeChat = computed(() => {
   return chatStore.activeChat as { messages: Message[] } | null;
 });
+
+
 
 const filteredMessages = computed(() => {
   return activeChat.value?.messages.filter(msg => msg.role !== 'system') ?? [];

@@ -26,6 +26,8 @@
         <v-icon>mdi-cog</v-icon>
       </v-btn>
     </v-app-bar>
+    <SettingsDialog v-model:openDialog="settingsDialogOpen" />
+
     <v-navigation-drawer location="left" class="side-navigation rag-panel text-primary z-0">
       <div class="pa-4">
         <v-btn block color="primary" prepend-icon="mdi-plus" class="mb-4 flex justify-center tech-button "
@@ -43,7 +45,7 @@
       <div class="chat-list">
         <v-list à density="compact" bg-color="transparent" color="flex justify-start">
           <v-list-item v-for="chat in chatStore.chats" :key="chat.id" :title="`${chat.title}`"
-            prepend-icon="mdi-chat-outline" active-color="primary" class="mb-1 tech-list-item relative"
+            prepend-icon="mdi-chat-outline" active-color="primary" class="mb-1 tech-list-item relative text-white"
             :class="{ 'active-chat': chat.id === activeChat?.id }" @click="chatStore.selectChat(chat.id)">
             <template v-slot:append>
               <div class="chat-actions">
@@ -61,7 +63,6 @@
           </v-list-item>
         </v-list>
       </div>
-      <SettingsDialog v-model:openDialog="settingsDialogOpen" />
     </v-navigation-drawer>
 
     <v-main class="bg-interface-bg max-h-screen">

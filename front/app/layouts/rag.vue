@@ -22,7 +22,12 @@
       <v-btn icon variant="text" class="mx-1 glow-hover text-primary">
         <v-icon>mdi-cog</v-icon>
       </v-btn>
+      <v-btn icon variant="text" class="mx-1 glow-hover text-primary" @click="settingsDialogOpen = true">
+        <v-icon>mdi-cog</v-icon>
+      </v-btn>
     </v-app-bar>
+    <SettingsDialog v-model:openDialog="settingsDialogOpen" />
+
 
     <v-navigation-drawer location="left" class="side-navigation rag-panel text-primary ">
       <v-list-item prepend-icon="mdi-database-settings" title="RAG" to="/RAG"></v-list-item>
@@ -43,6 +48,7 @@
 
 <script setup lang="ts">
 
+const settingsDialogOpen = ref(false);
 
 
 </script>

@@ -48,7 +48,7 @@
                 </v-row>
 
                 <v-card-actions>
-                    <v-btn variant="text" class="mx-2 rag-button glow-hover" prepend-icon="mdi-database-sync"
+                    <v-btn variant="text" class="mx-2 rag-button glow-hover" prepend-icon="mdi-close"
                         @click="handleDialogChange(false)">
                         Fermer
                     </v-btn>
