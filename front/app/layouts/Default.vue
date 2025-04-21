@@ -38,7 +38,7 @@
 
       <div class="tech-section-header mt-2 mb-3">
         <div class="tech-line"></div>
-        <txt class="text-caption   text-primary mx-2 ">CONVERSATIONS</txt>
+        <span class="text-caption   text-primary mx-2 ">CONVERSATIONS</span>
         <div class="tech-line"></div>
       </div>
 
