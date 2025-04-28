@@ -7,7 +7,7 @@ Mistral-Gagnant est un assistant personnel IA conçu autour des modèles Mistral
 - Interface utilisateur intuitive et épurée
 - Système RAG (Retrieval-Augmented Generation) pour enrichir les réponses avec des données personnelles
 - Intégration avec Notion comme base de connaissances externe
-- Stockage efficace des conversations et vecteurs dans Supabase
+- Stockage efficace des conversations et vecteurs dans Supabase (ChromaDB prochainement)
 - Compatibilité avec les modèles Mistral, Hermes et Cogito via Ollama
 
 ## 🚀 Guide d'utilisation
@@ -47,13 +47,13 @@ docker-compose up -d
 - L'utilisation de WSL est recommandée pour le développement sur Windows
 - Base de données Notion
 - Base de données Supabase
-- Clé API Hugging Face
+- Clé API Hugging Face (pour les embeddings)
 - Ollama avec les modèles : mistral, hermes3, cogito, etc.
 
 ### Structure du projet
 - `core/` : Package npm contenant la logique RAG et les intégrations
 - `front/` : Application Nuxt 3 / Vuetify / Tailwind
-- `RAG_TS/` : Implémentations et expérimentations RAG en TypeScript
+- `embeddings_visualisation/` : Premières implémentations et expérimentations RAG en python
 
 ### Installation pour le développement
 
@@ -61,7 +61,6 @@ docker-compose up -d
 ```bash
 cd core
 npm install
-npm run dev
 ```
 
 #### Front (Interface utilisateur)
